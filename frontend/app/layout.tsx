@@ -1,8 +1,8 @@
 import './globals.css';
 
 export const metadata = {
-  title: 'Healthcare Outcome Variance Simulator',
-  description: 'Medical treatment simulation and variance analysis',
+  title: 'CareCompass',
+  description: 'Probabilistic breast cancer outcome projection engine. SEER, CMS, PubMed.',
 };
 
 export default function RootLayout({
