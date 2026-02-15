@@ -1,5 +1,5 @@
 import React from 'react';
-import { Database, ExternalLink, CheckCircle2, AlertTriangle, Shield, RefreshCw } from 'lucide-react';
+import { Database, ExternalLink, CheckCircle2, AlertTriangle, Shield, RefreshCw, Activity } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../components/ui/Card';
 import { Badge } from '../components/ui/Badge';
 
@@ -22,42 +22,129 @@ export function DataSourcesPage() {
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4 max-w-5xl">
           <h2 className="text-3xl font-bold text-slate-900 mb-12">Primary Data Sources</h2>
-          
+
           <div className="space-y-8">
-            {/* CMS */}
+            {/* SEER */}
             <Card className="border-l-4 border-l-[#00BFB3]">
               <CardHeader>
                 <CardTitle className="flex items-center gap-3">
                   <Database className="h-6 w-6 text-[#00BFB3]" />
-                  1. Centers for Medicare & Medicaid Services (CMS)
+                  1. SEER Program (Surveillance, Epidemiology, and End Results)
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
                   <h4 className="font-bold text-slate-900 mb-2">What We Use:</h4>
                   <ul className="list-disc list-inside space-y-1 text-slate-700 ml-4">
-                    <li>Hospital Compare / Care Compare database</li>
-                    <li>30-day mortality rates by condition</li>
-                    <li>30-day readmission rates</li>
-                    <li>Hospital-acquired infection rates</li>
-                    <li>Patient experience (HCAHPS) scores</li>
-                    <li>Price transparency machine-readable files</li>
-                    <li>Inpatient Prospective Payment System (IPPS) data</li>
-                    <li>Procedure billing frequencies and utilization rates</li>
+                    <li>Annual incidence per 100,000 population</li>
+                    <li>Age-adjusted cancer rates</li>
+                    <li>Stage distribution at diagnosis</li>
+                    <li>5-year survival rates by stage</li>
+                    <li>Demographic breakdowns (age, race, geography)</li>
                   </ul>
                 </div>
                 <div>
                   <h4 className="font-bold text-slate-900 mb-2">Why It Matters:</h4>
                   <p className="text-slate-700">
-                    CMS data represents real-world outcomes from millions of actual patient encounters, 
-                    not just clinical trial populations. The billing frequency data shows us whether 
-                    hospitals actually provide guideline-recommended treatments in practice.
+                    SEER provides validated, population-level probabilities that define the baseline probability of
+                    disease, distribution of disease severity, and survival likelihoods conditional on stage. These
+                    variables are foundational for our Monte Carlo model because they give us real-world epidemiological
+                    data rather than anecdotal clinical findings.
                   </p>
                 </div>
                 <div className="flex flex-wrap gap-4 items-center">
-                  <Badge variant="secondary">Quarterly updates</Badge>
+                  <Badge variant="secondary">Free via SEER*Stat</Badge>
+                  <Badge variant="secondary">NCI Operated</Badge>
+                  <a href="https://seer.cancer.gov" target="_blank" rel="noopener noreferrer"
+                     className="text-[#00BFB3] hover:underline flex items-center gap-1 text-sm">
+                    seer.cancer.gov <ExternalLink className="h-3 w-3" />
+                  </a>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* PubMed */}
+            <Card className="border-l-4 border-l-blue-500">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-3">
+                  <Activity className="h-6 w-6 text-blue-600" />
+                  2. PubMed / NCBI E-utilities API
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <h4 className="font-bold text-slate-900 mb-2">What We Use:</h4>
+                  <ul className="list-disc list-inside space-y-1 text-slate-700 ml-4">
+                    <li>Meta-analyses and randomized controlled trials (last 10 years)</li>
+                    <li>Hazard ratios for treatment efficacy</li>
+                    <li>Recurrence rates and progression-free survival</li>
+                    <li>Treatment-specific survival outcomes</li>
+                    <li>Confidence intervals and effect sizes</li>
+                  </ul>
+                </div>
+                <div>
+                  <h4 className="font-bold text-slate-900 mb-2">Why It Matters:</h4>
+                  <p className="text-slate-700">
+                    Automated literature retrieval through PubMed allows our Monte Carlo engine to simulate outcome
+                    differences between treatment pathways using validated clinical trial data. We filter for
+                    meta-analyses, systematic reviews, and RCTs with large sample sizes and clearly reported confidence
+                    intervals. Studies older than 10 years are down-weighted to reflect evolving treatment standards.
+                  </p>
+                </div>
+                <div>
+                  <h4 className="font-bold text-slate-900 mb-2">Data Quality Safeguards:</h4>
+                  <ul className="list-disc list-inside space-y-1 text-slate-700 ml-4 text-sm">
+                    <li>Only include studies labeled as "meta-analysis" or "randomized controlled trial"</li>
+                    <li>Apply recency filters (publication date within last decade)</li>
+                    <li>Extract sample sizes and weight effect sizes proportionally</li>
+                    <li>Require confidence intervals; discard studies without uncertainty bounds</li>
+                    <li>Cross-validate against SEER population-level data</li>
+                  </ul>
+                </div>
+                <div className="flex flex-wrap gap-4 items-center">
+                  <Badge variant="secondary">Free (rate-limited)</Badge>
+                  <Badge variant="secondary">API access</Badge>
+                  <a href="https://pubmed.ncbi.nlm.nih.gov" target="_blank" rel="noopener noreferrer"
+                     className="text-[#00BFB3] hover:underline flex items-center gap-1 text-sm">
+                    pubmed.ncbi.nlm.nih.gov <ExternalLink className="h-3 w-3" />
+                  </a>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* CMS */}
+            <Card className="border-l-4 border-l-green-500">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-3">
+                  <CheckCircle2 className="h-6 w-6 text-green-600" />
+                  3. Centers for Medicare & Medicaid Services (CMS)
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <h4 className="font-bold text-slate-900 mb-2">What We Use:</h4>
+                  <ul className="list-disc list-inside space-y-1 text-slate-700 ml-4">
+                    <li>Hospital General Information (quality ratings, services offered)</li>
+                    <li>Medicare Spending Per Beneficiary (MSPB) scores</li>
+                    <li>Procedure billing frequencies and utilization rates</li>
+                    <li>Regional treatment variability data</li>
+                    <li>Hospital performance metrics and mortality rates</li>
+                  </ul>
+                </div>
+                <div>
+                  <h4 className="font-bold text-slate-900 mb-2">Why It Matters:</h4>
+                  <p className="text-slate-700">
+                    CMS data provides real-world treatment adoption patterns and utilization rates. This helps model
+                    the probability that a diagnosed patient actually receives specific therapies at different facilities.
+                    Clinical trial efficacy does not equal real-world effectiveness, so these utilization rates are
+                    essential for accurate outcome predictions. MSPB scores allow us to factor in cost efficiency when
+                    comparing treatment centers.
+                  </p>
+                </div>
+                <div className="flex flex-wrap gap-4 items-center">
+                  <Badge variant="secondary">Free via data.cms.gov</Badge>
                   <Badge variant="secondary">~4,500 hospitals</Badge>
-                  <a href="https://data.cms.gov" target="_blank" rel="noopener noreferrer" 
+                  <a href="https://data.cms.gov" target="_blank" rel="noopener noreferrer"
                      className="text-[#00BFB3] hover:underline flex items-center gap-1 text-sm">
                     data.cms.gov <ExternalLink className="h-3 w-3" />
                   </a>
@@ -65,111 +152,76 @@ export function DataSourcesPage() {
               </CardContent>
             </Card>
 
-            {/* Leapfrog */}
-            <Card className="border-l-4 border-l-blue-500">
+            {/* CDC */}
+            <Card className="border-l-4 border-l-purple-500">
               <CardHeader>
                 <CardTitle className="flex items-center gap-3">
-                  <Shield className="h-6 w-6 text-blue-600" />
-                  2. The Leapfrog Group
+                  <Shield className="h-6 w-6 text-purple-600" />
+                  4. Centers for Disease Control and Prevention (CDC)
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
                   <h4 className="font-bold text-slate-900 mb-2">What We Use:</h4>
                   <ul className="list-disc list-inside space-y-1 text-slate-700 ml-4">
-                    <li>Hospital safety grades (A-F)</li>
-                    <li>ICU physician staffing ratings</li>
-                    <li>High-risk surgery volume standards</li>
-                    <li>Medication safety practices</li>
-                    <li>Infection control protocols</li>
+                    <li>Behavioral Risk Factor Surveillance System (BRFSS) data</li>
+                    <li>Environmental exposure risk data</li>
+                    <li>Geographic and demographic risk factors</li>
+                    <li>Age, sex, and location-based risk stratification</li>
                   </ul>
                 </div>
                 <div>
                   <h4 className="font-bold text-slate-900 mb-2">Why It Matters:</h4>
                   <p className="text-slate-700">
-                    Leapfrog independently evaluates hospitals on structural safety factors that CMS 
-                    doesn't always capture, like whether ICU patients have 24/7 intensivist coverage.
+                    CDC datasets support probabilistic modeling of risk stratification by age, sex, and geography.
+                    This allows our simulations to vary baseline risk based on environmental exposure rather than
+                    assuming a uniform population. Risk factors can significantly affect treatment outcomes and
+                    recurrence probabilities.
                   </p>
                 </div>
                 <div className="flex flex-wrap gap-4 items-center">
-                  <Badge variant="secondary">Bi-annual updates</Badge>
-                  <Badge variant="secondary">~2,200 hospitals</Badge>
-                  <a href="https://leapfroggroup.org" target="_blank" rel="noopener noreferrer" 
+                  <Badge variant="secondary">Free public access</Badge>
+                  <Badge variant="secondary">Population-level data</Badge>
+                  <a href="https://www.cdc.gov/data" target="_blank" rel="noopener noreferrer"
                      className="text-[#00BFB3] hover:underline flex items-center gap-1 text-sm">
-                    leapfroggroup.org <ExternalLink className="h-3 w-3" />
+                    cdc.gov/data <ExternalLink className="h-3 w-3" />
                   </a>
                 </div>
               </CardContent>
             </Card>
 
             {/* ClinicalTrials.gov */}
-            <Card className="border-l-4 border-l-green-500">
+            <Card className="border-l-4 border-l-amber-500">
               <CardHeader>
                 <CardTitle className="flex items-center gap-3">
-                  <CheckCircle2 className="h-6 w-6 text-green-600" />
-                  3. ClinicalTrials.gov
+                  <Database className="h-6 w-6 text-amber-600" />
+                  5. ClinicalTrials.gov
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
                   <h4 className="font-bold text-slate-900 mb-2">What We Use:</h4>
                   <ul className="list-disc list-inside space-y-1 text-slate-700 ml-4">
-                    <li>Published results from randomized controlled trials</li>
-                    <li>Treatment efficacy data for interventions</li>
-                    <li>Adverse event rates</li>
-                    <li>Inclusion/exclusion criteria to understand trial populations</li>
+                    <li>Structured metadata on ongoing trials</li>
+                    <li>Published results from completed trials</li>
+                    <li>Treatment efficacy data for new interventions</li>
+                    <li>Enrollment criteria and trial availability</li>
                   </ul>
                 </div>
                 <div>
                   <h4 className="font-bold text-slate-900 mb-2">Why It Matters:</h4>
                   <p className="text-slate-700">
-                    Clinical trials establish what's possible under ideal conditions. We use this as the 
-                    "best case scenario" baseline, then adjust for real-world implementation gaps using 
-                    CMS utilization data.
+                    While this doesn't directly inform survival probabilities in our current model, it serves as a
+                    forward-looking adjustment factor for modeling future projections beyond current standard of care.
+                    It also helps identify emerging therapies and pipeline treatments that may become available.
                   </p>
                 </div>
                 <div className="flex flex-wrap gap-4 items-center">
-                  <Badge variant="secondary">Continuous updates</Badge>
+                  <Badge variant="secondary">Free API access</Badge>
                   <Badge variant="secondary">450,000+ trials</Badge>
-                  <a href="https://clinicaltrials.gov" target="_blank" rel="noopener noreferrer" 
+                  <a href="https://clinicaltrials.gov" target="_blank" rel="noopener noreferrer"
                      className="text-[#00BFB3] hover:underline flex items-center gap-1 text-sm">
                     clinicaltrials.gov <ExternalLink className="h-3 w-3" />
-                  </a>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Cochrane */}
-            <Card className="border-l-4 border-l-purple-500">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-3">
-                  <Database className="h-6 w-6 text-purple-600" />
-                  4. Cochrane Library
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div>
-                  <h4 className="font-bold text-slate-900 mb-2">What We Use:</h4>
-                  <ul className="list-disc list-inside space-y-1 text-slate-700 ml-4">
-                    <li>Systematic reviews and meta-analyses</li>
-                    <li>Treatment effectiveness estimates</li>
-                    <li>Evidence quality ratings (GRADE system)</li>
-                    <li>Comparative effectiveness data</li>
-                  </ul>
-                </div>
-                <div>
-                  <h4 className="font-bold text-slate-900 mb-2">Why It Matters:</h4>
-                  <p className="text-slate-700">
-                    Cochrane reviews synthesize all available evidence on a treatment, providing more 
-                    reliable estimates than individual studies.
-                  </p>
-                </div>
-                <div className="flex flex-wrap gap-4 items-center">
-                  <Badge variant="secondary">2-5 year review cycles</Badge>
-                  <Badge variant="secondary">8,000+ reviews</Badge>
-                  <a href="https://cochranelibrary.com" target="_blank" rel="noopener noreferrer" 
-                     className="text-[#00BFB3] hover:underline flex items-center gap-1 text-sm">
-                    cochranelibrary.com <ExternalLink className="h-3 w-3" />
                   </a>
                 </div>
               </CardContent>
@@ -178,92 +230,148 @@ export function DataSourcesPage() {
         </div>
       </section>
 
-      {/* What We Don't Have */}
+      {/* Monte Carlo Parameters */}
       <section className="py-16 bg-slate-50">
         <div className="container mx-auto px-4 max-w-5xl">
-          <h2 className="text-3xl font-bold text-slate-900 mb-8">What We Don't Have (Yet)</h2>
-          
-          <Card className="bg-amber-50 border-amber-300">
+          <h2 className="text-3xl font-bold text-slate-900 mb-8">Monte Carlo Model Parameters</h2>
+
+          <Card>
+            <CardContent className="p-8">
+              <p className="text-slate-700 mb-6">
+                Our fully automated probabilistic framework extracts and integrates the following key parameters:
+              </p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-slate-700">
+                <div className="flex items-start gap-2">
+                  <span className="text-[#00BFB3] mt-1">•</span>
+                  <span>Annual incidence probability</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="text-[#00BFB3] mt-1">•</span>
+                  <span>Stage-at-diagnosis distribution</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="text-[#00BFB3] mt-1">•</span>
+                  <span>Stage-specific 5-year survival rates</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="text-[#00BFB3] mt-1">•</span>
+                  <span>Recurrence probabilities by treatment</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="text-[#00BFB3] mt-1">•</span>
+                  <span>Treatment-specific hazard ratios</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="text-[#00BFB3] mt-1">•</span>
+                  <span>Real-world treatment adoption rates</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="text-[#00BFB3] mt-1">•</span>
+                  <span>Cost distributions by pathway</span>
+                </div>
+                <div className="flex items-start gap-2">
+                  <span className="text-[#00BFB3] mt-1">•</span>
+                  <span>Mortality variance across healthcare settings</span>
+                </div>
+              </div>
+              <p className="text-slate-700 mt-6">
+                Each simulation iteration samples from these distributions, applies treatment effect modifiers, and
+                produces projected survival outcomes over a defined time horizon. This approach ingests validated
+                registry data for baseline disease probability, integrates high-quality clinical trial effect sizes
+                for treatment impact, and adjusts for real-world adoption rates.
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+
+      {/* API Usage & Cost */}
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-4 max-w-5xl">
+          <h2 className="text-3xl font-bold text-slate-900 mb-8">API Usage & Cost</h2>
+
+          <Card className="bg-green-50 border-green-300">
             <CardHeader>
-              <CardTitle className="flex items-center gap-3 text-amber-900">
-                <AlertTriangle className="h-6 w-6 text-amber-600" />
-                Limitations We're Transparent About
+              <CardTitle className="flex items-center gap-3 text-green-900">
+                <CheckCircle2 className="h-6 w-6 text-green-600" />
+                All Data Sources Are Free
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <ul className="grid grid-cols-1 md:grid-cols-2 gap-4 text-slate-700">
+              <ul className="text-slate-700 space-y-2">
                 <li className="flex items-start gap-2">
-                  <span className="text-amber-600 mt-1">•</span>
-                  <span><strong>Physician-level data:</strong> We model hospital performance, not individual doctor outcomes</span>
+                  <span className="text-green-600 mt-1">✓</span>
+                  <span><strong>PubMed E-utilities:</strong> Free with rate limits (no per-call charges)</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-amber-600 mt-1">•</span>
-                  <span><strong>Social determinants:</strong> Limited data on transportation access, housing stability, nutrition</span>
+                  <span className="text-green-600 mt-1">✓</span>
+                  <span><strong>SEER data:</strong> Free (requires registration)</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-amber-600 mt-1">•</span>
-                  <span><strong>Real-time availability:</strong> We use quarterly/annual snapshots, not live bed counts</span>
+                  <span className="text-green-600 mt-1">✓</span>
+                  <span><strong>CMS data:</strong> Free through public endpoints</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-amber-600 mt-1">•</span>
-                  <span><strong>All payers:</strong> Some insurance negotiated rates remain proprietary</span>
+                  <span className="text-green-600 mt-1">✓</span>
+                  <span><strong>CDC datasets:</strong> Free public access</span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-amber-600 mt-1">•</span>
-                  <span><strong>Granular comorbidities:</strong> We use broad categories due to data aggregation</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span className="text-amber-600 mt-1">•</span>
-                  <span><strong>Patient-reported outcomes:</strong> Most registries focus on clinical endpoints, not quality of life</span>
+                  <span className="text-green-600 mt-1">✓</span>
+                  <span><strong>ClinicalTrials.gov API:</strong> Free access</span>
                 </li>
               </ul>
-              <p className="text-slate-700 mt-4 font-medium">We're actively working to fill these gaps.</p>
+              <p className="text-slate-700 mt-4 text-sm">
+                No commercial data providers or paid services are required for our core functionality.
+              </p>
             </CardContent>
           </Card>
         </div>
       </section>
 
       {/* Data Quality */}
-      <section className="py-16 bg-white">
+      <section className="py-16 bg-slate-50">
         <div className="container mx-auto px-4 max-w-5xl">
           <h2 className="text-3xl font-bold text-slate-900 mb-8">Data Quality & Validation</h2>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg">Handling Missing Data</CardTitle>
+                <CardTitle className="text-lg">Literature Quality Control</CardTitle>
               </CardHeader>
               <CardContent>
                 <ul className="text-sm text-slate-700 space-y-2">
-                  <li>✓ Imputation using similar hospital characteristics</li>
-                  <li>✓ Clearly mark estimates vs. reported values</li>
-                  <li>✓ Wider confidence intervals when data is sparse</li>
+                  <li>✓ Only meta-analyses and RCTs included</li>
+                  <li>✓ Recency filters (10-year window)</li>
+                  <li>✓ Sample size weighting applied</li>
+                  <li>✓ Confidence intervals required</li>
                 </ul>
               </CardContent>
             </Card>
 
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg">Handling Conflicts</CardTitle>
+                <CardTitle className="text-lg">Cross-Validation</CardTitle>
               </CardHeader>
               <CardContent>
                 <ul className="text-sm text-slate-700 space-y-2">
-                  <li>✓ Prioritize more recent data sources</li>
-                  <li>✓ Weight by sample size and quality</li>
-                  <li>✓ Display ranges when sources disagree</li>
+                  <li>✓ Literature vs. SEER population data</li>
+                  <li>✓ Flag extreme deviations</li>
+                  <li>✓ Exclude biased trial populations</li>
+                  <li>✓ Maintain statistical robustness</li>
                 </ul>
               </CardContent>
             </Card>
 
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg">Outlier Detection</CardTitle>
+                <CardTitle className="text-lg">Continuous Updates</CardTitle>
               </CardHeader>
               <CardContent>
                 <ul className="text-sm text-slate-700 space-y-2">
-                  <li>✓ Flag hospitals with implausible values</li>
-                  <li>✓ Require manual review before inclusion</li>
-                  <li>✓ Note data quality concerns in profiles</li>
+                  <li>✓ API-driven automated retrieval</li>
+                  <li>✓ Quarterly data refreshes</li>
+                  <li>✓ Eliminate manual literature review</li>
+                  <li>✓ Evidence quality control maintained</li>
                 </ul>
               </CardContent>
             </Card>
@@ -272,13 +380,13 @@ export function DataSourcesPage() {
       </section>
 
       {/* Your Data */}
-      <section className="py-16 bg-[#E0F2F1]">
+      <section className="py-16 bg-white">
         <div className="container mx-auto px-4 max-w-5xl">
           <h2 className="text-3xl font-bold text-slate-900 mb-8 flex items-center gap-3">
             <Shield className="h-8 w-8 text-[#00BFB3]" />
             Your Data
           </h2>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <Card className="bg-white">
               <CardHeader>
@@ -313,86 +421,11 @@ export function DataSourcesPage() {
             <CardContent className="p-6">
               <h4 className="font-bold text-slate-900 mb-2">What We Analyze Anonymously:</h4>
               <p className="text-slate-700 text-sm">
-                Aggregate usage patterns (which features are used), search patterns (which conditions/locations), 
+                Aggregate usage patterns (which features are used), search patterns (which conditions/locations),
                 and performance metrics (load times, errors). See our <a href="/privacy" className="text-[#00BFB3] hover:underline">Privacy Policy</a> for details.
               </p>
             </CardContent>
           </Card>
-        </div>
-      </section>
-
-      {/* Update Schedule */}
-      <section className="py-16 bg-white">
-        <div className="container mx-auto px-4 max-w-5xl">
-          <h2 className="text-3xl font-bold text-slate-900 mb-8 flex items-center gap-3">
-            <RefreshCw className="h-8 w-8 text-[#00BFB3]" />
-            Data Updates
-          </h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <Card>
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="font-bold text-slate-900">Real-Time</span>
-                  <Badge>Live</Badge>
-                </div>
-                <p className="text-sm text-slate-600">Map locations, hospital addresses</p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="font-bold text-slate-900">Weekly</span>
-                  <Badge variant="secondary">7 days</Badge>
-                </div>
-                <p className="text-sm text-slate-600">Price transparency files</p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="font-bold text-slate-900">Quarterly</span>
-                  <Badge variant="secondary">90 days</Badge>
-                </div>
-                <p className="text-sm text-slate-600">CMS quality metrics</p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="font-bold text-slate-900">Semi-Annually</span>
-                  <Badge variant="secondary">6 months</Badge>
-                </div>
-                <p className="text-sm text-slate-600">Leapfrog safety grades</p>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardContent className="p-4">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="font-bold text-slate-900">Annually</span>
-                  <Badge variant="secondary">1 year</Badge>
-                </div>
-                <p className="text-sm text-slate-600">Full model recalibration</p>
-              </CardContent>
-            </Card>
-          </div>
-
-          <div className="mt-8 p-6 bg-slate-100 rounded-lg">
-            <div className="flex justify-between items-center">
-              <div>
-                <p className="text-sm text-slate-600">Last full data refresh:</p>
-                <p className="font-bold text-slate-900">February 14, 2025</p>
-              </div>
-              <div>
-                <p className="text-sm text-slate-600">Next scheduled update:</p>
-                <p className="font-bold text-slate-900">March 15, 2025</p>
-              </div>
-            </div>
-          </div>
         </div>
       </section>
     </div>

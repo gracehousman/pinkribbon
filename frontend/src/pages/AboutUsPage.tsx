@@ -14,7 +14,7 @@ export function AboutUsPage() {
             <span className="text-[#00BFB3]">One Simulation at a Time</span>
           </h1>
           <p className="text-xl text-slate-600 max-w-3xl mx-auto">
-            CareCompass was born at TreeHacks 2025 from a simple question: Why do patients make 
+            CareCompass was born at TreeHacks 2026 from a simple question: Why do patients make
             life-or-death healthcare decisions with less data than they use to buy a coffee maker?
           </p>
         </div>
@@ -179,9 +179,9 @@ export function AboutUsPage() {
           
           <Card className="bg-gradient-to-br from-teal-50 to-blue-50 border-[#00BFB3]">
             <CardContent className="p-8">
-              <h3 className="text-xl font-bold text-slate-900 mb-4">TreeHacks 2025 Project</h3>
+              <h3 className="text-xl font-bold text-slate-900 mb-4">TreeHacks 2026 Project</h3>
               <p className="text-slate-700 mb-4">
-                Built at Stanford's premier hackathon, combining expertise in computer science, 
+                Built at Stanford's premier hackathon, combining expertise in computer science,
                 healthcare policy, and data science.
               </p>
               <p className="text-sm text-slate-600 italic">
@@ -216,59 +216,26 @@ export function AboutUsPage() {
             </div>
           </div>
 
-          <h3 className="text-2xl font-bold text-slate-900 mb-6 text-center">Get Involved</h3>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <Card className="hover:shadow-lg transition-shadow">
-              <CardContent className="p-6 text-center">
-                <h4 className="font-bold text-slate-900 mb-2">For Healthcare Providers</h4>
-                <p className="text-sm text-slate-600 mb-4">
-                  Interested in partnering to improve data quality or validate our models?
-                </p>
-                <Button variant="outline" size="sm" className="border-[#00BFB3] text-[#00BFB3]">
-                  Contact Us
-                </Button>
-              </CardContent>
-            </Card>
+          <h3 className="text-2xl font-bold text-slate-900 mb-6 text-center">Created By</h3>
 
-            <Card className="hover:shadow-lg transition-shadow">
-              <CardContent className="p-6 text-center">
-                <h4 className="font-bold text-slate-900 mb-2">For Researchers</h4>
-                <p className="text-sm text-slate-600 mb-4">
-                  Our methodology is open-source. We welcome collaboration and peer review.
-                </p>
-                <Button variant="outline" size="sm" className="border-[#00BFB3] text-[#00BFB3]">
-                  View on GitHub
-                </Button>
-              </CardContent>
-            </Card>
-
-            <Card className="hover:shadow-lg transition-shadow">
-              <CardContent className="p-6 text-center">
-                <h4 className="font-bold text-slate-900 mb-2">For Patients</h4>
-                <p className="text-sm text-slate-600 mb-4">
-                  Have feedback on how we can make this tool more useful? We're listening.
-                </p>
-                <Button variant="outline" size="sm" className="border-[#00BFB3] text-[#00BFB3]">
-                  Send Feedback
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
-
-      {/* Contact CTA */}
-      <section className="py-12 bg-[#00BFB3]">
-        <div className="container mx-auto px-4 text-center">
-          <h3 className="text-2xl font-bold text-white mb-4">Questions or Want to Learn More?</h3>
-          <p className="text-teal-50 mb-6 max-w-2xl mx-auto">
-            We're always happy to discuss our methodology, data sources, or potential collaborations.
-          </p>
-          <Button size="lg" variant="secondary" className="bg-white text-[#00BFB3] hover:bg-slate-100">
-            <Mail className="h-5 w-5 mr-2" />
-            hello@carecompass.health
-          </Button>
+          <Card className="bg-gradient-to-br from-teal-50 to-blue-50 border-[#00BFB3]">
+            <CardContent className="p-8">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center text-slate-900">
+                <div>
+                  <p className="font-semibold text-lg">Grace Housman</p>
+                </div>
+                <div>
+                  <p className="font-semibold text-lg">Rudy Pathak</p>
+                </div>
+                <div>
+                  <p className="font-semibold text-lg">Shardul Marathe</p>
+                </div>
+                <div>
+                  <p className="font-semibold text-lg">Priyanka Kudallur</p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </section>
     </div>

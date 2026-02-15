@@ -8,7 +8,7 @@ import os
 from typing import Any, Dict, List
 from geocoding import geocode_address
 
-CSV_PATH = os.path.join(os.path.dirname(__file__), "..", "data", "Hospital_General_Information.csv")
+CSV_PATH = os.path.join(os.path.dirname(__file__), "..", "data", "Hospital_General_Information_with_MSPB.csv")
 
 # Module-level data: loaded once at import
 _ALL_HOSPITALS: List[Dict[str, str]] = []
@@ -50,6 +50,20 @@ def _compute_measure_score(row: Dict[str, str], prefix: str) -> float:
     return round(3.0 + score * 2.0, 1)
 
 
+def _parse_mspb_score(row: Dict[str, str]) -> float:
+    """
+    Parse MSPB Score from CSV. Returns raw MSPB score.
+    MSPB Score: 1.0 = national average, <1.0 = lower cost, >1.0 = higher cost
+    """
+    try:
+        mspb = float(row.get("MSPB_Score", "") or "")
+        if mspb <= 0:
+            return 1.0  # Return national average if no valid data
+        return mspb
+    except (ValueError, TypeError):
+        return 1.0  # Return national average if no data
+
+
 def _csv_row_to_hospital(row: Dict[str, str], user_zip: str) -> Dict[str, Any]:
     hospital_zip = row.get("ZIP Code", "").strip()
     exact_match = hospital_zip == user_zip
@@ -79,7 +93,7 @@ def _csv_row_to_hospital(row: Dict[str, str], user_zip: str) -> Dict[str, Any]:
         "rating": rating,
         "metrics": {
             "overallRating": rating,
-            "mspbComparison": _compute_mspb_estimate(row, rating),
+            "mspbComparison": _parse_mspb_score(row),
             "mortalityComparison": _compute_measure_score(row, "MORT"),
             "safetyComparison": _compute_measure_score(row, "Safety"),
             "readmissionComparison": _compute_measure_score(row, "READM"),

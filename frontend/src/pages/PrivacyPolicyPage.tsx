@@ -383,29 +383,29 @@ export function PrivacyPolicyPage() {
           
           <Card className="bg-[#E0F2F1] border-[#00BFB3]">
             <CardContent className="p-8">
-              <div className="space-y-4">
+              <div className="space-y-6">
                 <div>
-                  <h3 className="font-bold text-slate-900 mb-2">Privacy Questions:</h3>
-                  <p className="text-slate-700 flex items-center gap-2">
-                    <Mail className="h-4 w-4 text-[#00BFB3]" />
-                    privacy@carecompass.health
-                  </p>
-                  <p className="text-sm text-slate-600">Response time: 5 business days</p>
-                </div>
-                
-                <div>
-                  <h3 className="font-bold text-slate-900 mb-2">General Inquiries:</h3>
-                  <p className="text-slate-700 flex items-center gap-2">
-                    <Mail className="h-4 w-4 text-[#00BFB3]" />
-                    hello@carecompass.health
-                  </p>
+                  <h3 className="font-bold text-slate-900 mb-3 text-center">Created By</h3>
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center text-slate-900">
+                    <div>
+                      <p className="font-semibold">Grace Housman</p>
+                    </div>
+                    <div>
+                      <p className="font-semibold">Rudy Pathak</p>
+                    </div>
+                    <div>
+                      <p className="font-semibold">Shardul Marathe</p>
+                    </div>
+                    <div>
+                      <p className="font-semibold">Priyanka Kudallur</p>
+                    </div>
+                  </div>
                 </div>
 
-                <div>
-                  <h3 className="font-bold text-slate-900 mb-2">Mailing Address:</h3>
-                  <p className="text-slate-700">
+                <div className="pt-4 border-t border-slate-200">
+                  <p className="text-slate-700 text-center">
                     CareCompass<br />
-                    Stanford University (TreeHacks 2025 Project)<br />
+                    Stanford University (TreeHacks 2026 Project)<br />
                     Stanford, CA 94305
                   </p>
                 </div>

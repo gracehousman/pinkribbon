@@ -455,8 +455,7 @@ export function MethodologyPage() {
               <div>
                 <h3 className="font-bold text-slate-900 mb-2">Peer Review:</h3>
                 <p className="text-slate-700">
-                  We welcome external validation and critique. Submit issues or pull requests on GitHub or 
-                  contact: research@carecompass.health
+                  We welcome external validation and critique. Submit issues or pull requests on GitHub.
                 </p>
               </div>
             </CardContent>
@@ -487,25 +486,31 @@ export function MethodologyPage() {
                 
                 <div>
                   <p className="text-sm text-slate-500 mb-1">Changelog</p>
-                  <a href="#" className="text-[#00BFB3] hover:underline">
-                    carecompass.health/methodology/changelog
-                  </a>
+                  <p className="text-xl font-semibold text-slate-700">View on GitHub</p>
                 </div>
               </div>
             </CardContent>
           </Card>
         </section>
 
-        {/* Contact */}
+        {/* Created By */}
         <section className="text-center">
-          <Card className="bg-[#00BFB3] text-white">
+          <Card className="bg-gradient-to-br from-teal-50 to-blue-50 border-[#00BFB3]">
             <CardContent className="p-12">
-              <FileText className="h-16 w-16 mx-auto mb-6 opacity-90" />
-              <h2 className="text-2xl font-bold mb-4">Contact the Research Team</h2>
-              <div className="space-y-2 text-teal-50">
-                <p>Scientific Questions: research@carecompass.health</p>
-                <p>Data Partnership Inquiries: data@carecompass.health</p>
-                <p>Clinical Validation: clinical@carecompass.health</p>
+              <h2 className="text-2xl font-bold text-slate-900 mb-6">Created By</h2>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-slate-900">
+                <div>
+                  <p className="font-semibold text-lg">Grace Housman</p>
+                </div>
+                <div>
+                  <p className="font-semibold text-lg">Rudy Pathak</p>
+                </div>
+                <div>
+                  <p className="font-semibold text-lg">Shardul Marathe</p>
+                </div>
+                <div>
+                  <p className="font-semibold text-lg">Priyanka Kudallur</p>
+                </div>
               </div>
             </CardContent>
           </Card>

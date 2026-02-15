@@ -20,7 +20,7 @@ export function AboutPage() {
               <span className="text-[#00BFB3]">One Simulation at a Time</span>
             </h1>
             <p className="text-xl text-slate-600">
-              CareCompass was born at TreeHacks 2025 from a simple question: Why do patients make life-or-death healthcare decisions with less data than they use to buy a coffee maker?
+              CareCompass was born at TreeHacks 2026 from a simple question: Why do patients make life-or-death healthcare decisions with less data than they use to buy a coffee maker?
             </p>
           </motion.div>
         </div>
@@ -181,7 +181,7 @@ export function AboutPage() {
             <h2 className="text-3xl font-bold text-slate-900 mb-8">The Team</h2>
             <Card className="bg-[#E0F2F1] border-[#00BFB3]/20">
               <CardContent className="p-8">
-                <h3 className="text-xl font-semibold text-slate-900 mb-3">TreeHacks 2025 Project</h3>
+                <h3 className="text-xl font-semibold text-slate-900 mb-3">TreeHacks 2026 Project</h3>
                 <p className="text-slate-700 leading-relaxed">
                   Built at Stanford's premier hackathon, combining expertise in computer science, healthcare policy, and data science.
                 </p>
@@ -236,40 +236,29 @@ export function AboutPage() {
         </div>
       </section>
 
-      {/* Get Involved */}
+      {/* Created By */}
       <section className="py-16 bg-white">
         <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl font-bold text-slate-900 mb-8">Get Involved</h2>
-            
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <Card className="hover:shadow-lg transition-shadow">
-                <CardContent className="p-6">
-                  <Users className="h-8 w-8 text-[#00BFB3] mb-4" />
-                  <h3 className="font-bold text-slate-900 mb-2">For Healthcare Providers</h3>
-                  <p className="text-sm text-slate-600 mb-4">Interested in partnering to improve data quality or validate our models?</p>
-                  <a href="mailto:partners@carecompass.health" className="text-[#00BFB3] font-semibold text-sm">Contact us →</a>
-                </CardContent>
-              </Card>
-
-              <Card className="hover:shadow-lg transition-shadow">
-                <CardContent className="p-6">
-                  <BookOpen className="h-8 w-8 text-[#00BFB3] mb-4" />
-                  <h3 className="font-bold text-slate-900 mb-2">For Researchers</h3>
-                  <p className="text-sm text-slate-600 mb-4">Our methodology is open-source. We welcome collaboration and peer review.</p>
-                  <a href="mailto:research@carecompass.health" className="text-[#00BFB3] font-semibold text-sm">Learn more →</a>
-                </CardContent>
-              </Card>
-
-              <Card className="hover:shadow-lg transition-shadow">
-                <CardContent className="p-6">
-                  <Heart className="h-8 w-8 text-[#00BFB3] mb-4" />
-                  <h3 className="font-bold text-slate-900 mb-2">For Patients</h3>
-                  <p className="text-sm text-slate-600 mb-4">Have feedback on how we can make this tool more useful?</p>
-                  <a href="mailto:hello@carecompass.health" className="text-[#00BFB3] font-semibold text-sm">We're listening →</a>
-                </CardContent>
-              </Card>
-            </div>
+          <div className="max-w-4xl mx-auto text-center">
+            <h2 className="text-3xl font-bold text-slate-900 mb-8">Created By</h2>
+            <Card className="bg-gradient-to-br from-teal-50 to-blue-50 border-[#00BFB3]">
+              <CardContent className="p-8">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-slate-900">
+                  <div>
+                    <p className="font-semibold text-lg">Grace Housman</p>
+                  </div>
+                  <div>
+                    <p className="font-semibold text-lg">Rudy Pathak</p>
+                  </div>
+                  <div>
+                    <p className="font-semibold text-lg">Shardul Marathe</p>
+                  </div>
+                  <div>
+                    <p className="font-semibold text-lg">Priyanka Kudallur</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </section>

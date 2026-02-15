@@ -378,8 +378,17 @@ export function SimulationDashboard() {
                   <tr>
                     <th className="text-left p-3 font-semibold text-slate-700">Pathway</th>
                     <th className="text-center p-3 font-semibold text-slate-700">5-Yr Recurrence</th>
-                    <th className="text-center p-3 font-semibold text-slate-700">Quality Adjusted Life Months</th>
-                    <th className="text-center p-3 font-semibold text-slate-700">Major Side Effects</th>
+                    <th className="text-center p-3 font-semibold text-slate-700">
+                      <div className="flex items-center justify-center gap-1">
+                        Major Side Effects
+                        <span
+                          className="inline-flex cursor-help"
+                          title="Probability of experiencing a major long-term side effect (cardiotoxicity, infertility, or neuropathy) that persists beyond the acute treatment phase"
+                        >
+                          <Info className="h-4 w-4 text-slate-400" />
+                        </span>
+                      </div>
+                    </th>
                     <th className="text-center p-3 font-semibold text-slate-700">Median Cost</th>
                   </tr>
                 </thead>
@@ -404,9 +413,6 @@ export function SimulationDashboard() {
                             ({(pathway.probability_recurrence_5y_95_si_low * 100).toFixed(1)}% - {(pathway.probability_recurrence_5y_95_si_high * 100).toFixed(1)}%)
                           </span>
                         </td>
-                        <td className="text-center p-3 font-semibold">
-                          {pathway.mean_quality_adjusted_months_5y.toFixed(1)} months
-                        </td>
                         <td className="text-center p-3">
                           <span className={`font-semibold ${pathway.probability_major_long_term_side_effect < 0.15 ? 'text-green-600' : pathway.probability_major_long_term_side_effect < 0.30 ? 'text-amber-600' : 'text-red-600'}`}>
                             {(pathway.probability_major_long_term_side_effect * 100).toFixed(1)}%
@@ -424,6 +430,11 @@ export function SimulationDashboard() {
                   })}
                 </tbody>
               </table>
+            </div>
+            <div className="mt-4 px-4 py-3 bg-slate-50 rounded-lg border border-slate-200">
+              <p className="text-xs text-slate-600">
+                <strong>Major Side Effects:</strong> This percentage shows the likelihood of experiencing persistent cardiotoxicity (heart damage), infertility, or neuropathy (nerve damage) that continues beyond the acute treatment phase. Lower percentages are better.
+              </p>
             </div>
           </CardContent>
         </Card>
