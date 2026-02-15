@@ -118,7 +118,7 @@ export function DataSourcesPage() {
                     <li><strong>Medicare Spending Per Beneficiary (MSPB) scores:</strong> Cost efficiency (1.0=national avg, &lt;1.0=lower cost, &gt;1.0=higher cost)</li>
                     <li><strong>Procedure cost distributions:</strong> Mean and CV for lumpectomy ($8,500±15%), mastectomy+recon ($28,000±22%), chemotherapy ($3,500/cycle±25%), HER2-targeted ($45,000/year±35%)</li>
                     <li><strong>Regional cost modifiers:</strong> Geographic adjustment factors by ZIP code/state</li>
-                    <li><strong>Hospital quality metrics:</strong> Mortality, safety, readmission comparison scores</li>
+                    <li><strong>Hospital quality metrics:</strong> Low mortality, safety, low readmission comparison scores</li>
                   </ul>
                 </div>
                 <div>

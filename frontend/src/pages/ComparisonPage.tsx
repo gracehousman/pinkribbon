@@ -189,9 +189,9 @@ export function ComparisonPage() {
             </div>
             <div className="grid grid-cols-[200px_1fr] divide-x divide-slate-100">
                <div className="p-6 text-sm text-slate-500 space-y-8 pt-10">
-                  <div>Mortality</div>
+                  <div>Low Mortality</div>
                   <div>Safety of Care</div>
-                  <div>Readmission</div>
+                  <div>Low Readmission</div>
                </div>
                <div className="flex divide-x divide-slate-100 overflow-x-auto">
                   {hospitalsWithScore.map(h => (

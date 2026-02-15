@@ -196,7 +196,7 @@ export function MethodologyPage() {
                     <ul className="list-disc list-inside space-y-1 text-slate-700 ml-4">
                       <li>Hospital quality ratings (1-5 stars) from CMS Hospital Compare</li>
                       <li>MSPB scores (cost efficiency: &lt;1.0 = below avg cost, &gt;1.0 = above avg)</li>
-                      <li>Mortality, safety, readmission comparison scores</li>
+                      <li>Low mortality, safety, low readmission comparison scores</li>
                       <li>Geographic proximity (ZIP3 matching)</li>
                     </ul>
                   </div>
