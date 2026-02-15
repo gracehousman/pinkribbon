@@ -9,11 +9,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from models import PatientInput
 from simulation_pathway_engine import run_projection, ITERATIONS_PER_PATHWAY
-<<<<<<< Updated upstream
-from hospitals import HOSPITALS
-=======
 from hospital_search import search_hospitals
->>>>>>> Stashed changes
 
 logger = logging.getLogger("carecompass")
 logging.basicConfig(level=logging.INFO)
@@ -59,15 +55,8 @@ def project(patient: PatientInput):
     )
     return result
 
-<<<<<<< Updated upstream
-@app.get("/hospitals")
-def get_hospitals():
-    return HOSPITALS
-=======
-
 @app.get("/hospitals/search")
 def hospital_search(zip_code: str = ""):
     """Return hospitals near the given ZIP code. Exact ZIP matches first, then same ZIP3 area."""
     results = search_hospitals(zip_code, limit=50)
     return {"hospitals": results, "query_zip": zip_code, "count": len(results)}
->>>>>>> Stashed changes
