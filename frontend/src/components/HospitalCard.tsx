@@ -44,7 +44,7 @@ export function HospitalCard({ hospital, onSelect, isSelected, onHover, isMapHov
             <h3 className="font-bold text-slate-900 text-lg leading-tight">{hospital.name}</h3>
             <div className="flex items-center gap-2 mt-1">
               <span className="text-xs text-slate-500 flex items-center">
-                <MapPin className="h-3 w-3 mr-0.5" /> {hospital.distance} mi
+                <MapPin className="h-3 w-3 mr-0.5" /> {hospital.distance > 0 ? `${hospital.distance} mi` : 'Nearby'}
               </span>
               <Badge variant="outline" className="text-[10px] px-1.5 py-0 border-pink-200 text-[#E91E63] bg-pink-50">
                 Offers Lumpectomy
@@ -74,15 +74,21 @@ export function HospitalCard({ hospital, onSelect, isSelected, onHover, isMapHov
           <div className="flex flex-col">
             <div className="text-[10px] text-slate-500 font-medium mb-1">Overall Rating</div>
             <div className="flex items-center gap-1">
-               <div className="flex text-yellow-400">
-                 {[1, 2, 3, 4, 5].map((star) => (
-                   <Star 
-                     key={star} 
-                     className={cn("h-3 w-3", star <= Math.round(hospital.metrics.overallRating) ? "fill-current" : "text-slate-200")} 
-                   />
-                 ))}
-               </div>
-               <span className="text-xs font-bold text-slate-700">{hospital.metrics.overallRating}</span>
+               {hospital.metrics.overallRating > 0 ? (
+                 <>
+                   <div className="flex text-yellow-400">
+                     {[1, 2, 3, 4, 5].map((star) => (
+                       <Star
+                         key={star}
+                         className={cn("h-3 w-3", star <= Math.round(hospital.metrics.overallRating) ? "fill-current" : "text-slate-200")}
+                       />
+                     ))}
+                   </div>
+                   <span className="text-xs font-bold text-slate-700">{hospital.metrics.overallRating}</span>
+                 </>
+               ) : (
+                 <span className="text-xs text-slate-400">Not Rated</span>
+               )}
             </div>
           </div>
 
@@ -100,15 +106,15 @@ export function HospitalCard({ hospital, onSelect, isSelected, onHover, isMapHov
              <div className="flex items-center gap-1 text-[10px] text-slate-500 font-medium mb-1">
                Est. Cost <Info className="h-3 w-3 text-slate-300" />
              </div>
-             <div className="text-xs font-bold text-slate-900">${hospital.metrics.estOutOfPocket.toLocaleString()}</div>
+             <div className="text-xs font-bold text-slate-900">{hospital.metrics.estOutOfPocket > 0 ? `$${hospital.metrics.estOutOfPocket.toLocaleString()}` : 'N/A'}</div>
           </div>
         </div>
 
         {/* Footer Actions */}
         <div className="flex items-center justify-between">
            <div className="flex items-center gap-3 text-xs">
-              <span className={cn("font-medium", hospital.isInNetwork ? "text-green-600" : "text-red-500")}>
-                {hospital.isInNetwork ? "In Network" : "Out of Network"}
+              <span className={cn("font-medium", hospital.isInNetwork ? "text-green-600" : "text-slate-500")}>
+                {hospital.isInNetwork ? "In Network" : "Check Network"}
               </span>
               <span className="text-slate-300">|</span>
               <span className="flex items-center gap-1 text-slate-500">
@@ -121,7 +127,7 @@ export function HospitalCard({ hospital, onSelect, isSelected, onHover, isMapHov
                Details
              </Button>
              <Button variant="outline" size="sm" className="h-7 text-xs border-slate-200 px-2" asChild>
-                <a href={`https://maps.google.com/?q=${hospital.coordinates.lat},${hospital.coordinates.lng}`} target="_blank" rel="noreferrer">
+                <a href={`https://maps.google.com/?q=${encodeURIComponent(`${hospital.name}, ${hospital.address}, ${hospital.city}`)}`} target="_blank" rel="noreferrer">
                    Directions
                 </a>
              </Button>
