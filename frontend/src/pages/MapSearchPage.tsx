@@ -1,12 +1,6 @@
-<<<<<<< Updated upstream
-import React, { useState, useMemo, Suspense, lazy } from 'react';
-import { Filter, Map as MapIcon, ChevronDown, Check, X, ArrowRight, Search, SlidersHorizontal, Star } from 'lucide-react';
-import { HOSPITALS } from '../data/mockData';
-=======
 import React, { useState, useMemo, useEffect } from 'react';
 import { Filter, Map as MapIcon, ChevronDown, Check, X, ArrowRight, Search, SlidersHorizontal, Star, Loader2 } from 'lucide-react';
 import { Hospital } from '../data/mockData';
->>>>>>> Stashed changes
 import { HospitalCard } from '../components/HospitalCard';
 import { Button } from '../components/ui/Button';
 import { Input } from '../components/ui/Input';
@@ -15,10 +9,6 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { cn } from '../lib/utils';
 import { PATHWAY_NAMES, PATHWAY_TO_TREATMENT_ID, calculateBestTreatment, ProjectionResult, searchHospitals } from '../lib/api';
 
-<<<<<<< Updated upstream
-// Dynamically import Leaflet map to avoid SSR issues
-const LeafletMap = lazy(() => import('../components/LeafletMap').then(m => ({ default: m.LeafletMap })));
-=======
 // Map Component with Rating Pins
 const MapView = ({ hospitals, hoveredId, selectedIds, onSelect, onHover }: any) => {
   // Calculate bounds
@@ -97,7 +87,6 @@ const MapView = ({ hospitals, hoveredId, selectedIds, onSelect, onHover }: any) 
     </div>
   );
 };
->>>>>>> Stashed changes
 
 const SIMULATION_STORAGE_KEY = 'carecompass_simulation_results';
 
@@ -353,26 +342,14 @@ export function MapSearchPage() {
 
         {/* Right Panel: Map */}
         <div className="hidden md:block flex-1 h-full relative">
-<<<<<<< Updated upstream
-          <Suspense fallback={
-            <div className="w-full h-full bg-slate-100 flex items-center justify-center">
-              <p className="text-slate-500">Loading map...</p>
-            </div>
-          }>
-            <LeafletMap
-=======
           {hasCoordinates ? (
             <MapView
->>>>>>> Stashed changes
               hospitals={sortedHospitals}
               hoveredId={hoveredId}
               selectedIds={selectedIds}
               onSelect={handleSelect}
               onHover={setHoveredId}
             />
-<<<<<<< Updated upstream
-          </Suspense>
-=======
           ) : (
             <div className="flex items-center justify-center h-full bg-slate-50">
               <div className="text-center text-slate-400">
@@ -382,7 +359,6 @@ export function MapSearchPage() {
               </div>
             </div>
           )}
->>>>>>> Stashed changes
 
           {/* Map Controls */}
           <div className="absolute top-4 right-4 flex flex-col gap-2 z-[1000]">
