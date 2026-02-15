@@ -79,7 +79,7 @@ def _csv_row_to_hospital(row: Dict[str, str], user_zip: str) -> Dict[str, Any]:
         "rating": rating,
         "metrics": {
             "overallRating": rating,
-            "mspbComparison": 1.0,
+            "mspbComparison": _compute_mspb_estimate(row, rating),
             "mortalityComparison": _compute_measure_score(row, "MORT"),
             "safetyComparison": _compute_measure_score(row, "Safety"),
             "readmissionComparison": _compute_measure_score(row, "READM"),

@@ -18,15 +18,9 @@ export function LeafletMap({ hospitals, hoveredId, selectedIds, onSelect, onHove
     setMounted(true);
   }, []);
 
-  if (!mounted) {
+  if (!mounted || hospitals.length === 0) {
     return <div className="w-full h-full bg-slate-100 flex items-center justify-center">
-      <p className="text-slate-500">Initializing map...</p>
-    </div>;
-  }
-
-  if (hospitals.length === 0) {
-    return <div className="w-full h-full bg-slate-100 flex items-center justify-center">
-      <p className="text-slate-500">No hospitals to display</p>
+      <p className="text-slate-500">Loading map...</p>
     </div>;
   }
 
@@ -43,8 +37,6 @@ export function LeafletMap({ hospitals, hoveredId, selectedIds, onSelect, onHove
     else if (hospital.metrics.overallRating >= 3.5) ratingColor = "bg-yellow-500";
     else if (hospital.metrics.overallRating >= 3.0) ratingColor = "bg-orange-500";
     else ratingColor = "bg-red-500";
-
-    const ratingDisplay = hospital.metrics.overallRating > 0 ? hospital.metrics.overallRating : '−';
 
     const iconHtml = `
       <div style="
@@ -66,7 +58,7 @@ export function LeafletMap({ hospitals, hoveredId, selectedIds, onSelect, onHove
             font-weight: bold;
             font-size: 12px;
             color: ${isSelected ? 'white' : '#1e293b'};
-          ">${ratingDisplay}</span>
+          ">${hospital.metrics.overallRating > 0 ? hospital.metrics.overallRating : '-'}</span>
           <span style="color: ${isSelected ? 'white' : '#fbbf24'}; font-size: 12px;">★</span>
         </div>
       </div>
@@ -82,7 +74,6 @@ export function LeafletMap({ hospitals, hoveredId, selectedIds, onSelect, onHove
 
   return (
     <MapContainer
-      key={`map-${hospitals.length}-${avgLat}-${avgLng}`}
       center={[avgLat, avgLng]}
       zoom={11}
       style={{ height: '100%', width: '100%' }}
@@ -108,12 +99,12 @@ export function LeafletMap({ hospitals, hoveredId, selectedIds, onSelect, onHove
             <div className="text-sm">
               <div className="font-bold text-slate-900">{hospital.name}</div>
               <div className="flex justify-between items-center mt-2 text-xs text-slate-500">
-                <span>{hospital.distance.toFixed(1)} mi</span>
-                <span className="font-bold text-[#00BFB3]">${hospital.metrics.estOutOfPocket.toLocaleString()}</span>
+                <span>{hospital.distance > 0 ? `${hospital.distance.toFixed(1)} mi` : '-'}</span>
+                <span className="font-bold text-[#00BFB3]">{hospital.metrics.estOutOfPocket > 0 ? `$${hospital.metrics.estOutOfPocket.toLocaleString()}` : '-'}</span>
               </div>
               <div className="mt-1 text-xs flex items-center gap-1">
                 <span className="text-yellow-500">★</span>
-                <span>{hospital.metrics.overallRating.toFixed(1)}</span>
+                <span>{hospital.metrics.overallRating > 0 ? hospital.metrics.overallRating.toFixed(1) : '-'}</span>
               </div>
             </div>
           </Popup>
