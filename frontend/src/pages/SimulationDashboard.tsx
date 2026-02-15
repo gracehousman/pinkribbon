@@ -1,8 +1,8 @@
-import { useMemo, useEffect } from 'react';
+import { useMemo, useEffect, useState } from 'react';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, Cell
 } from 'recharts';
-import { ArrowLeft, Share2, Download, Info, Award, User, MapPin, AlertTriangle } from 'lucide-react';
+import { ArrowLeft, Share2, Download, Info, Award, User, MapPin, AlertTriangle, ChevronDown, ChevronUp, Heart, Calendar, Users } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '../components/ui/Card';
 import { Badge } from '../components/ui/Badge';
@@ -11,9 +11,96 @@ import { ProjectionResult, PATHWAY_NAMES, calculateBestTreatment } from '../lib/
 
 const SIMULATION_STORAGE_KEY = 'carecompass_simulation_results';
 
+// Treatment-specific supportive guidance
+const TREATMENT_GUIDANCE: Record<string, {
+  whatToExpect: string;
+  affirmation: string;
+  supportResources: string[];
+  icon: typeof Heart;
+}> = {
+  lumpectomy_radiation: {
+    whatToExpect: "You'll typically have a lumpectomy surgery first to remove the tumor while preserving your breast tissue. Recovery from surgery is usually 1-2 weeks. After healing, you'll have radiation therapy—usually 5 days a week for 3-6 weeks. The daily sessions take about 15-30 minutes, and most people continue their normal routines during treatment.",
+    affirmation: "This breast-conserving option has excellent success rates. While the daily radiation visits may feel like a lot at first, many patients find they adjust to the routine quickly. You're preserving your breast tissue while getting highly effective treatment—that's something to feel good about.",
+    supportResources: [
+      "Ask about oncology social workers who can help coordinate transportation to daily radiation appointments",
+      "Consider joining a breast cancer support group—many meet virtually now",
+      "Look into gentle exercises and skin care routines specifically for radiation patients"
+    ],
+    icon: Heart
+  },
+  mastectomy_no_recon: {
+    whatToExpect: "You'll have surgery to remove breast tissue, typically requiring a 1-2 night hospital stay. Recovery at home usually takes 2-4 weeks before returning to most activities. You may have surgical drains for 1-2 weeks. Many people choose prosthetics or go flat—both are valid, empowering choices.",
+    affirmation: "This is a powerful, proactive choice that significantly reduces recurrence risk. Your body is strong, and you're taking control of your health journey. Many patients report feeling relief and empowerment after this decision. Healing takes time, but you're giving yourself the best chance at a healthy future.",
+    supportResources: [
+      "Connect with flat closure advocacy groups and communities who celebrate this choice",
+      "Explore beautiful prosthetic options if interested—many are covered by insurance",
+      "Ask your surgeon about 'flat closure' techniques if going flat is your choice",
+      "Physical therapy can help restore arm and shoulder mobility after surgery"
+    ],
+    icon: Award
+  },
+  mastectomy_recon: {
+    whatToExpect: "You'll have mastectomy surgery followed by reconstruction—either immediate (same surgery) or delayed (later). Hospital stay is typically 1-3 nights. Recovery varies but usually 4-6 weeks for initial healing. If using implants, you may need tissue expander adjustments every 2-3 weeks. Flap reconstruction involves a longer surgery but may feel more natural long-term.",
+    affirmation: "You're not just treating cancer—you're reclaiming your sense of self. Reconstruction is a personal journey, and there's no rush. Your plastic surgeon and oncology team will work together to create a plan that honors both your health and your vision for your body. You deserve to feel whole and confident.",
+    supportResources: [
+      "Schedule consultations with board-certified plastic surgeons who specialize in breast reconstruction",
+      "Join reconstruction support groups to see real experiences and results",
+      "Ask about 'previvor' programs and what to expect with tissue expanders if applicable",
+      "Occupational therapy can help with daily activities during recovery"
+    ],
+    icon: Heart
+  },
+  chemotherapy_plus_surgery: {
+    whatToExpect: "Chemotherapy is typically given in cycles over 3-6 months, with infusions every 1-3 weeks at a treatment center. Each session takes a few hours, and side effects peak 2-5 days after infusion, then improve. Surgery follows once chemo is complete. You'll likely need help with daily tasks during the first few days after each treatment.",
+    affirmation: "Yes, chemotherapy is challenging—but you're stronger than you know. This treatment is working hard to eliminate cancer cells throughout your body. Many patients find their own rhythm with chemo cycles and discover unexpected resilience. After some time, your energy will return, your hair will grow back, and you'll carry the strength of knowing you fought hard and won.",
+    supportResources: [
+      "Ask about anti-nausea medications before your first infusion—modern options are very effective",
+      "Connect with a chemotherapy support network or buddy system",
+      "Consider 'cold caps' to reduce hair loss if important to you",
+      "Discuss flexible work arrangements or short-term disability options",
+      "Nutritionists specializing in oncology can help maintain strength during treatment"
+    ],
+    icon: Award
+  },
+  endocrine_therapy: {
+    whatToExpect: "You'll take a daily pill (like tamoxifen or an aromatase inhibitor) for 5-10 years. Regular check-ins with your oncologist every 3-6 months help monitor how you're feeling. Some people experience menopausal-like symptoms, joint aches, or mood changes—but many have minimal side effects. The long duration works in your favor, continuously protecting you.",
+    affirmation: "Taking a daily pill for years requires real commitment, and that matters. You're actively preventing recurrence every single day. If side effects arise, know that there are different medications and supportive therapies to try. This long-term protection is giving you years of healthy life ahead—that's worth celebrating.",
+    supportResources: [
+      "Join endocrine therapy support groups to share tips for managing side effects",
+      "Ask about bone density monitoring and calcium supplements if on aromatase inhibitors",
+      "Explore exercise programs designed for people on long-term hormone therapy",
+      "Consider counseling if mood changes occur—they're manageable and temporary"
+    ],
+    icon: Heart
+  },
+  her2_targeted: {
+    whatToExpect: "HER2-targeted therapy (like Herceptin/trastuzumab or Perjeta) is given by IV infusion, typically every 3 weeks for about a year. The first infusion takes longer (90 minutes), then subsequent ones are usually 30-60 minutes. Side effects are generally milder than traditional chemo—many people work and maintain normal activities throughout treatment.",
+    affirmation: "You have HER2-positive cancer, which means you can benefit from these incredibly effective targeted therapies. This is precision medicine at work—attacking cancer cells while largely sparing healthy ones. The year of treatment will pass, and you'll emerge with excellent protection against recurrence. You're in good hands.",
+    supportResources: [
+      "Ask about home healthcare options—some targeted therapies can be given at home",
+      "Join HER2-positive patient communities to connect with others on the same path",
+      "Request cardiac monitoring—it's routine and ensures your heart stays healthy during treatment",
+      "Explore patient assistance programs if cost is a concern"
+    ],
+    icon: Award
+  },
+  clinical_trial: {
+    whatToExpect: "Clinical trials offer access to cutting-edge treatments not yet widely available. You'll receive close monitoring with frequent check-ins and tests. The trial team will explain exactly what to expect—schedule, side effects, and what's known vs. experimental. You can leave a trial at any time if it's not right for you.",
+    affirmation: "Choosing a clinical trial is courageous—you're helping yourself while advancing science for future patients. Trial participants often receive exceptional care with extra attention from medical teams. You're a pioneer in cancer treatment, and your contribution matters deeply. Whatever happens, you're part of something bigger.",
+    supportResources: [
+      "Ask detailed questions about the trial protocol and what's standard care vs. experimental",
+      "Connect with clinical trial navigators who can explain everything in plain language",
+      "Join advocacy groups for clinical trial participants",
+      "Know your rights—you can withdraw from a trial at any time"
+    ],
+    icon: Award
+  }
+};
+
 export function SimulationDashboard() {
   const navigate = useNavigate();
   const location = useLocation();
+  const [showMoreExpanded, setShowMoreExpanded] = useState(false);
 
   // Try to get results from navigation state first, then from localStorage
   const getProjectionResults = (): ProjectionResult | null => {
@@ -176,9 +263,78 @@ export function SimulationDashboard() {
                     <h3 className="text-2xl font-bold text-slate-900 mb-2">
                       Recommended: {PATHWAY_NAMES[bestPathway] || bestPathway}
                     </h3>
-                    <p className="text-slate-700">
+                    <p className="text-slate-700 mb-4">
                       Based on your profile and our Monte Carlo analysis, this pathway has the lowest predicted 5-year recurrence probability.
                     </p>
+
+                    {/* Show More Button */}
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setShowMoreExpanded(!showMoreExpanded)}
+                      className="text-[#E91E63] border-[#E91E63] hover:bg-[#E91E63] hover:text-white transition-colors"
+                    >
+                      {showMoreExpanded ? (
+                        <>
+                          <ChevronUp className="h-4 w-4 mr-2" />
+                          Show Less
+                        </>
+                      ) : (
+                        <>
+                          <ChevronDown className="h-4 w-4 mr-2" />
+                          Show More - What to Expect
+                        </>
+                      )}
+                    </Button>
+
+                    {/* Expandable Content */}
+                    {showMoreExpanded && TREATMENT_GUIDANCE[bestPathway] && (
+                      <div className="mt-6 space-y-6 animate-in fade-in duration-300">
+                        {/* What to Expect */}
+                        <div className="bg-white rounded-lg p-5 border border-pink-200 shadow-sm">
+                          <div className="flex items-start gap-3">
+                            <Calendar className="h-5 w-5 text-[#E91E63] mt-1 flex-shrink-0" />
+                            <div>
+                              <h4 className="font-semibold text-slate-900 mb-2 text-lg">What to Expect</h4>
+                              <p className="text-slate-700 leading-relaxed">
+                                {TREATMENT_GUIDANCE[bestPathway].whatToExpect}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Affirmation */}
+                        <div className="bg-gradient-to-br from-pink-50 to-purple-50 rounded-lg p-5 border border-pink-200 shadow-sm">
+                          <div className="flex items-start gap-3">
+                            <Heart className="h-5 w-5 text-[#E91E63] mt-1 flex-shrink-0" />
+                            <div>
+                              <h4 className="font-semibold text-slate-900 mb-2 text-lg">You've Got This</h4>
+                              <p className="text-slate-700 leading-relaxed">
+                                {TREATMENT_GUIDANCE[bestPathway].affirmation}
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Support Resources */}
+                        <div className="bg-white rounded-lg p-5 border border-pink-200 shadow-sm">
+                          <div className="flex items-start gap-3">
+                            <Users className="h-5 w-5 text-[#E91E63] mt-1 flex-shrink-0" />
+                            <div className="flex-1">
+                              <h4 className="font-semibold text-slate-900 mb-3 text-lg">Support & Resources</h4>
+                              <ul className="space-y-2">
+                                {TREATMENT_GUIDANCE[bestPathway].supportResources.map((resource, idx) => (
+                                  <li key={idx} className="flex items-start gap-2 text-slate-700">
+                                    <span className="text-[#E91E63] font-bold mt-1">•</span>
+                                    <span className="leading-relaxed">{resource}</span>
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
