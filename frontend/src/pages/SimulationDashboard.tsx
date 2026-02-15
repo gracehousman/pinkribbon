@@ -342,6 +342,27 @@ export function SimulationDashboard() {
           </CardContent>
         </Card>
 
+        {/* Find Centers CTA - Moved here beneath the chart */}
+        <div className="bg-gradient-to-r from-slate-900 to-slate-800 rounded-2xl p-8 md:p-12 text-center md:text-left relative overflow-hidden text-white shadow-2xl">
+           <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-5 rounded-full -translate-y-1/2 translate-x-1/2"></div>
+           <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
+              <div className="space-y-4 max-w-2xl">
+                 <h2 className="text-3xl font-bold">Ready to Find Treatment Centers?</h2>
+                 <p className="text-slate-300 text-lg">
+                   Now that you know which pathway is best for you, find top-rated hospitals and treatment centers
+                   near you that offer {bestPathway && PATHWAY_NAMES[bestPathway]}.
+                 </p>
+              </div>
+              <Button
+                size="lg"
+                className="bg-gradient-to-r from-[#00BFB3] to-[#00A69C] hover:from-[#00A69C] hover:to-[#008f85] text-white font-bold text-lg px-8 py-6 h-auto shadow-lg shadow-teal-500/20 whitespace-nowrap"
+                onClick={() => navigate('/find-centers', { state: { bestPathway } })}
+              >
+                Find Treatment Centers <MapPin className="ml-2 h-5 w-5" />
+              </Button>
+           </div>
+        </div>
+
         {/* Detailed Metrics Table */}
         <Card>
           <CardHeader>
@@ -447,27 +468,6 @@ export function SimulationDashboard() {
               </p>
             </CardContent>
           </Card>
-        </div>
-
-        {/* Find Centers CTA */}
-        <div className="mt-12 bg-gradient-to-r from-slate-900 to-slate-800 rounded-2xl p-8 md:p-12 text-center md:text-left relative overflow-hidden text-white shadow-2xl">
-           <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-5 rounded-full -translate-y-1/2 translate-x-1/2"></div>
-           <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
-              <div className="space-y-4 max-w-2xl">
-                 <h2 className="text-3xl font-bold">Ready to Find Treatment Centers?</h2>
-                 <p className="text-slate-300 text-lg">
-                   Now that you know which pathway is best for you, find top-rated hospitals and treatment centers
-                   near you that offer {bestPathway && PATHWAY_NAMES[bestPathway]}.
-                 </p>
-              </div>
-              <Button
-                size="lg"
-                className="bg-gradient-to-r from-[#00BFB3] to-[#00A69C] hover:from-[#00A69C] hover:to-[#008f85] text-white font-bold text-lg px-8 py-6 h-auto shadow-lg shadow-teal-500/20 whitespace-nowrap"
-                onClick={() => navigate('/find-centers', { state: { bestPathway } })}
-              >
-                Find Treatment Centers <MapPin className="ml-2 h-5 w-5" />
-              </Button>
-           </div>
         </div>
 
       </div>

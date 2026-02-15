@@ -19,12 +19,12 @@ export function LandingPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <h1 className="text-4xl font-extrabold tracking-tight text-slate-900 sm:text-5xl md:text-6xl max-w-5xl mx-auto">
+            <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl md:text-5xl max-w-5xl mx-auto">
               See How Breast Cancer Treatment Plans <br className="hidden sm:inline" />
               <span className="text-[#E91E63]">Affect Your Long-Term Outcomes</span>
             </h1>
             <p className="mt-4 max-w-3xl text-lg text-slate-600 mx-auto">
-              BCareCompass uses Monte Carlo simulation to model 10-20 year outcomes across different treatment approaches, personalized to your profile.
+              CareCompass uses Monte Carlo simulation to model 5-year outcomes across different treatment approaches, personalized to your profile.
             </p>
           </motion.div>
 
@@ -45,7 +45,7 @@ export function LandingPage() {
                   <div className="space-y-2">
                     <h2 className="text-2xl font-bold text-slate-900">Simulate Treatment Plans</h2>
                     <p className="text-slate-600 max-w-xl mx-auto">
-                      Compare long-term outcomes for lumpectomy+radiation, mastectomy, chemotherapy combinations, HER2 therapy, and clinical trials based on YOUR profile.
+                      Compare 5-year outcomes for lumpectomy+radiation, mastectomy, chemotherapy combinations, endocrine therapy, HER2 therapy, and clinical trials based on YOUR profile.
                     </p>
                   </div>
                   <Button

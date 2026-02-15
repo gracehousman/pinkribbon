@@ -1,11 +1,8 @@
-import React from 'react';
-import { MapPin, Star, Phone, Info, Check, ArrowDown, ArrowUp, ArrowRight, Plus } from 'lucide-react';
+import { Star, Phone, Check, ArrowDown, ArrowUp, ArrowRight, Plus } from 'lucide-react';
 import { Card, CardContent } from './ui/Card';
-import { Badge } from './ui/Badge';
 import { Button } from './ui/Button';
 import { Hospital } from '../data/mockData';
 import { cn } from '../lib/utils';
-import { useNavigate } from 'react-router-dom';
 
 interface HospitalCardProps {
   hospital: Hospital;
@@ -16,13 +13,11 @@ interface HospitalCardProps {
 }
 
 export function HospitalCard({ hospital, onSelect, isSelected, onHover, isMapHovered }: HospitalCardProps) {
-  const navigate = useNavigate();
-
   // Helper for MSPB
   const getMSPBDisplay = (val: number) => {
-    if (val < 0.95) return { color: 'text-green-600', bg: 'bg-green-50', icon: <ArrowDown className="h-3 w-3" />, text: 'Pay less than avg' };
-    if (val > 1.05) return { color: 'text-red-600', bg: 'bg-red-50', icon: <ArrowUp className="h-3 w-3" />, text: 'Pay more than avg' };
-    return { color: 'text-amber-600', bg: 'bg-amber-50', icon: <ArrowRight className="h-3 w-3" />, text: 'Pay average amount' };
+    if (val < 0.95) return { color: 'text-green-600', bg: 'bg-green-50', icon: <ArrowDown className="h-3 w-3" />, text: 'Lower cost' };
+    if (val > 1.05) return { color: 'text-red-600', bg: 'bg-red-50', icon: <ArrowUp className="h-3 w-3" />, text: 'Higher cost' };
+    return { color: 'text-amber-600', bg: 'bg-amber-50', icon: <ArrowRight className="h-3 w-3" />, text: 'Average cost' };
   };
 
   const mspb = getMSPBDisplay(hospital.metrics.mspbComparison);
@@ -42,14 +37,6 @@ export function HospitalCard({ hospital, onSelect, isSelected, onHover, isMapHov
         <div className="flex justify-between items-start mb-3">
           <div>
             <h3 className="font-bold text-slate-900 text-lg leading-tight">{hospital.name}</h3>
-            <div className="flex items-center gap-2 mt-1">
-              <span className="text-xs text-slate-500 flex items-center">
-                <MapPin className="h-3 w-3 mr-0.5" /> {hospital.distance > 0 ? `${hospital.distance} mi` : 'Nearby'}
-              </span>
-              <Badge variant="outline" className="text-[10px] px-1.5 py-0 border-pink-200 text-[#E91E63] bg-pink-50">
-                Offers Lumpectomy
-              </Badge>
-            </div>
           </div>
           
           <div className="flex flex-col items-end">
@@ -68,7 +55,7 @@ export function HospitalCard({ hospital, onSelect, isSelected, onHover, isMapHov
         </div>
 
         {/* Key Metrics Grid */}
-        <div className="grid grid-cols-3 gap-3 py-3 border-t border-b border-slate-100 mb-3 bg-slate-50/50 -mx-4 px-4">
+        <div className="grid grid-cols-2 gap-3 py-3 border-t border-b border-slate-100 mb-3 bg-slate-50/50 -mx-4 px-4">
           
           {/* Col 1: Overall Rating */}
           <div className="flex flex-col">
@@ -97,16 +84,8 @@ export function HospitalCard({ hospital, onSelect, isSelected, onHover, isMapHov
              <div className="text-[10px] text-slate-500 font-medium mb-1">Cost Efficiency</div>
              <div className={`flex items-center gap-1 text-xs font-bold ${mspb.color}`}>
                 {mspb.icon}
-                <span>{mspb.text.split(' ')[1]} {mspb.text.split(' ')[2]}</span>
+                <span className="whitespace-nowrap">{mspb.text}</span>
              </div>
-          </div>
-
-          {/* Col 3: Out of Pocket */}
-          <div className="flex flex-col border-l border-slate-200 pl-3">
-             <div className="flex items-center gap-1 text-[10px] text-slate-500 font-medium mb-1">
-               Est. Cost <Info className="h-3 w-3 text-slate-300" />
-             </div>
-             <div className="text-xs font-bold text-slate-900">{hospital.metrics.estOutOfPocket > 0 ? `$${hospital.metrics.estOutOfPocket.toLocaleString()}` : 'N/A'}</div>
           </div>
         </div>
 

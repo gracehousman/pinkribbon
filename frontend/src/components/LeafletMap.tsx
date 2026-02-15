@@ -18,9 +18,15 @@ export function LeafletMap({ hospitals, hoveredId, selectedIds, onSelect, onHove
     setMounted(true);
   }, []);
 
-  if (!mounted || hospitals.length === 0) {
+  if (!mounted) {
     return <div className="w-full h-full bg-slate-100 flex items-center justify-center">
-      <p className="text-slate-500">Loading map...</p>
+      <p className="text-slate-500">Initializing map...</p>
+    </div>;
+  }
+
+  if (hospitals.length === 0) {
+    return <div className="w-full h-full bg-slate-100 flex items-center justify-center">
+      <p className="text-slate-500">No hospitals to display</p>
     </div>;
   }
 
@@ -37,6 +43,8 @@ export function LeafletMap({ hospitals, hoveredId, selectedIds, onSelect, onHove
     else if (hospital.metrics.overallRating >= 3.5) ratingColor = "bg-yellow-500";
     else if (hospital.metrics.overallRating >= 3.0) ratingColor = "bg-orange-500";
     else ratingColor = "bg-red-500";
+
+    const ratingDisplay = hospital.metrics.overallRating > 0 ? hospital.metrics.overallRating : '−';
 
     const iconHtml = `
       <div style="
@@ -58,7 +66,7 @@ export function LeafletMap({ hospitals, hoveredId, selectedIds, onSelect, onHove
             font-weight: bold;
             font-size: 12px;
             color: ${isSelected ? 'white' : '#1e293b'};
-          ">${hospital.metrics.overallRating}</span>
+          ">${ratingDisplay}</span>
           <span style="color: ${isSelected ? 'white' : '#fbbf24'}; font-size: 12px;">★</span>
         </div>
       </div>
@@ -74,6 +82,7 @@ export function LeafletMap({ hospitals, hoveredId, selectedIds, onSelect, onHove
 
   return (
     <MapContainer
+      key={`map-${hospitals.length}-${avgLat}-${avgLng}`}
       center={[avgLat, avgLng]}
       zoom={11}
       style={{ height: '100%', width: '100%' }}

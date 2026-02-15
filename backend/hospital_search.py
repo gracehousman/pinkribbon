@@ -6,6 +6,7 @@ Indexes hospitals by ZIP3 prefix for fast lookup.
 import csv
 import os
 from typing import Any, Dict, List
+from geocoding import geocode_address
 
 CSV_PATH = os.path.join(os.path.dirname(__file__), "..", "data", "Hospital_General_Information.csv")
 
@@ -54,12 +55,25 @@ def _csv_row_to_hospital(row: Dict[str, str], user_zip: str) -> Dict[str, Any]:
     exact_match = hospital_zip == user_zip
     rating = _parse_rating(row.get("Hospital overall rating", ""))
 
+    # Geocode the address - but skip if it would take too long
+    address = (row.get("Address", "") or "").title()
+    city = (row.get("City/Town", "") or "").title()
+    state = row.get("State", "")
+
+    # Only geocode if it's already cached (to avoid delays)
+    from geocoding import geocode_address_cached_only
+    coords = geocode_address_cached_only(address, city, state, hospital_zip)
+    if coords:
+        lat, lng = coords
+    else:
+        lat, lng = 0, 0
+
     return {
         "id": row.get("Facility ID", ""),
         "name": (row.get("Facility Name", "") or "").title(),
         "type": row.get("Hospital Type", ""),
-        "address": (row.get("Address", "") or "").title(),
-        "city": (row.get("City/Town", "") or "").title(),
+        "address": address,
+        "city": city,
         "zip": hospital_zip,
         "distance": 0.0 if exact_match else 15.0,
         "rating": rating,
@@ -78,7 +92,7 @@ def _csv_row_to_hospital(row: Dict[str, str], user_zip: str) -> Dict[str, Any]:
             "accreditations": [],
             "languages": [],
         },
-        "coordinates": {"lat": 0, "lng": 0},
+        "coordinates": {"lat": lat, "lng": lng},
         "isInNetwork": False,
         "offersTreatments": [],
         "phone": row.get("Telephone Number", ""),

@@ -49,7 +49,7 @@ export function ProfilePage() {
     } catch (err) {
       console.error('Error loading saved priorities:', err);
     }
-    return { rating: 50, cost: 30, distance: 20 };
+    return { rating: 60, cost: 40 };
   };
 
   // Form state matching PatientInput interface
@@ -76,10 +76,9 @@ export function ProfilePage() {
   }, [priorities]);
 
   // Calculate live weights
-  const totalWeight = priorities.rating + priorities.cost + priorities.distance;
+  const totalWeight = priorities.rating + priorities.cost;
   const ratingWeight = Math.round((priorities.rating / totalWeight) * 100) || 0;
   const costWeight = Math.round((priorities.cost / totalWeight) * 100) || 0;
-  const distanceWeight = Math.round((priorities.distance / totalWeight) * 100) || 0;
 
   const handleSave = async (destination: string) => {
     if (destination === '/simulate') {
@@ -484,34 +483,15 @@ export function ProfilePage() {
                 <p className="text-xs text-slate-500">I want to minimize my out-of-pocket costs and find efficient care.</p>
               </div>
 
-              <div className="space-y-2">
-                <div className="flex justify-between items-end">
-                  <label className="text-sm font-medium flex items-center gap-2">
-                    <MapPin className="h-4 w-4 text-blue-500" /> Travel Convenience
-                  </label>
-                   <span className="text-sm font-bold text-slate-700">{priorities.distance}% Importance</span>
-                </div>
-                <input 
-                  type="range" 
-                  min="0" max="100" 
-                   value={priorities.distance}
-                  onChange={(e) => setPriorities({...priorities, distance: Number(e.target.value)})}
-                  className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#E91E63]" 
-                />
-                <p className="text-xs text-slate-500">I prefer hospitals closer to my home or work.</p>
-              </div>
-
               <div className="bg-slate-50 p-4 rounded-lg border border-slate-200 mt-4">
                  <p className="text-sm font-medium mb-2 text-center text-slate-700">Your Calculated Priorities</p>
                  <div className="flex h-4 w-full rounded-full overflow-hidden">
                     <div style={{ width: `${ratingWeight}%` }} className="bg-yellow-400 h-full" title="Rating" />
                     <div style={{ width: `${costWeight}%` }} className="bg-green-500 h-full" title="Cost" />
-                    <div style={{ width: `${distanceWeight}%` }} className="bg-blue-500 h-full" title="Distance" />
                  </div>
                  <div className="flex justify-between text-xs text-slate-500 mt-2">
                     <span className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-yellow-400" /> Rating ({ratingWeight}%)</span>
                     <span className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-green-500" /> Cost ({costWeight}%)</span>
-                    <span className="flex items-center gap-1"><div className="w-2 h-2 rounded-full bg-blue-500" /> Distance ({distanceWeight}%)</span>
                  </div>
               </div>
 

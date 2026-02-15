@@ -13,9 +13,9 @@ export function ComparisonPage() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  // Fallback to first two hospitals if no state
+  // Get hospitals from navigation state, or fallback to mock data
   const selectedIds = location.state?.selectedIds || ['h1', 'h2'];
-  const hospitals = HOSPITALS.filter(h => selectedIds.includes(h.id));
+  const hospitals = location.state?.hospitals || HOSPITALS.filter(h => selectedIds.includes(h.id));
 
   // Load user priorities from localStorage (saved from ProfilePage)
   const loadPriorities = () => {
@@ -28,7 +28,7 @@ export function ComparisonPage() {
       console.error('Error loading priorities:', err);
     }
     // Default priorities if none saved
-    return { rating: 50, cost: 30, distance: 20 };
+    return { rating: 60, cost: 40 };
   };
 
   const priorities = loadPriorities();
@@ -37,17 +37,13 @@ export function ComparisonPage() {
   const calculateMatchScore = (hospital: any) => {
     // Normalize metrics to 0-100 scale
     const ratingScore = (hospital.metrics.overallRating / 5) * 100;
-    
+
     // Cost: Lower is better. Let's say 0.8 MSPB is 100%, 1.2 is 0%
     const costScore = Math.max(0, Math.min(100, (1.2 - hospital.metrics.mspbComparison) * 250));
-    
-    // Distance: Closer is better. 0mi = 100%, 50mi = 0%
-    const distanceScore = Math.max(0, Math.min(100, (50 - hospital.distance) * 2));
 
     const totalScore = (
-      (ratingScore * priorities.rating) + 
-      (costScore * priorities.cost) + 
-      (distanceScore * priorities.distance)
+      (ratingScore * priorities.rating) +
+      (costScore * priorities.cost)
     ) / 100;
 
     return Math.round(totalScore);
@@ -91,15 +87,14 @@ export function ComparisonPage() {
             <div className="flex gap-4 overflow-x-auto pb-2">
                 <div className="w-48 shrink-0 flex items-center justify-center text-slate-400 text-sm font-medium italic">
                    Based on your priorities:<br/>
-                   Rating ({Math.round((priorities.rating / (priorities.rating + priorities.cost + priorities.distance)) * 100)}%),
-                   Cost ({Math.round((priorities.cost / (priorities.rating + priorities.cost + priorities.distance)) * 100)}%),<br/>
-                   Distance ({Math.round((priorities.distance / (priorities.rating + priorities.cost + priorities.distance)) * 100)}%)
+                   Rating ({Math.round((priorities.rating / (priorities.rating + priorities.cost)) * 100)}%),
+                   Cost ({Math.round((priorities.cost / (priorities.rating + priorities.cost)) * 100)}%)
                 </div>
                 
                 {hospitalsWithScore.map((hospital) => (
-                   <div key={hospital.id} className={cn("flex-1 min-w-[200px] border rounded-lg p-4 relative", hospital.id === winner.id ? "bg-white border-[#E91E63] shadow-md ring-1 ring-[#E91E63]" : "bg-white border-slate-200")}>
+                   <div key={hospital.id} className={cn("flex-1 min-w-[200px] border rounded-lg p-4 relative", hospital.id === winner.id ? "bg-white border-[#E91E63] shadow-md ring-1 ring-[#E91E63] mt-4" : "bg-white border-slate-200")}>
                       {hospital.id === winner.id && (
-                        <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#E91E63] text-white text-[10px] font-bold px-2 py-0.5 rounded-full flex items-center gap-1">
+                        <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-[#E91E63] text-white text-[10px] font-bold px-3 py-1 rounded-full flex items-center gap-1 shadow-sm">
                            <Trophy className="h-3 w-3" /> Recommended
                         </div>
                       )}
@@ -109,8 +104,6 @@ export function ComparisonPage() {
                             <span className="font-bold text-slate-900 mr-1">{hospital.metrics.overallRating}</span>
                             <Star className="h-3 w-3 fill-current" />
                          </div>
-                         <span className="text-slate-300">|</span>
-                         <span className="text-xs text-slate-500">{hospital.distance} mi</span>
                       </div>
                       
                       <div className="mt-3 flex items-center gap-2">
@@ -167,31 +160,24 @@ export function ComparisonPage() {
                </h3>
             </div>
             <div className="grid grid-cols-[200px_1fr] divide-x divide-slate-100">
-               <div className="p-6 text-sm text-slate-500 flex flex-col justify-center gap-4">
+               <div className="p-6 text-sm text-slate-500 flex items-center">
                   <p>Medicare Spending Per Beneficiary (MSPB)</p>
-                  <p>Est. Out-of-Pocket</p>
                </div>
                <div className="flex divide-x divide-slate-100 overflow-x-auto">
                   {hospitalsWithScore.map(h => (
-                     <div key={h.id} className="flex-1 p-6 flex flex-col items-center justify-center min-w-[200px] gap-8">
+                     <div key={h.id} className="flex-1 p-6 flex flex-col items-center justify-center min-w-[200px]">
                         {/* MSPB */}
                         <div className="text-center">
-                           <div className={cn("inline-flex items-center gap-1 font-bold px-3 py-1 rounded-full text-sm", 
-                              h.metrics.mspbComparison < 0.95 ? "bg-green-100 text-green-700" : 
+                           <div className={cn("inline-flex items-center gap-1 font-bold px-3 py-1 rounded-full text-sm",
+                              h.metrics.mspbComparison < 0.95 ? "bg-green-100 text-green-700" :
                               h.metrics.mspbComparison > 1.05 ? "bg-red-100 text-red-700" : "bg-yellow-100 text-yellow-700"
                            )}>
-                              {h.metrics.mspbComparison < 0.95 ? <TrendingDown className="h-4 w-4" /> : 
+                              {h.metrics.mspbComparison < 0.95 ? <TrendingDown className="h-4 w-4" /> :
                                h.metrics.mspbComparison > 1.05 ? <TrendingDown className="h-4 w-4 rotate-180" /> : <ArrowRight className="h-4 w-4" />}
-                              {h.metrics.mspbComparison < 0.95 ? "Pay less than avg" : 
+                              {h.metrics.mspbComparison < 0.95 ? "Pay less than avg" :
                                h.metrics.mspbComparison > 1.05 ? "Pay more than avg" : "Average Cost"}
                            </div>
                            <p className="text-xs text-slate-400 mt-1">Index: {h.metrics.mspbComparison}</p>
-                        </div>
-
-                        {/* Out of Pocket */}
-                        <div className="text-center">
-                           <div className="text-2xl font-bold text-slate-900">${h.metrics.estOutOfPocket.toLocaleString()}</div>
-                           {h.id === winner.id && <div className="text-xs text-green-600 font-bold mt-1">Best Value</div>}
                         </div>
                      </div>
                   ))}
@@ -210,16 +196,14 @@ export function ComparisonPage() {
                <div className="p-6 text-sm text-slate-500 space-y-8 pt-10">
                   <div>Mortality</div>
                   <div>Safety of Care</div>
-                  <div>Patient Experience</div>
                   <div>Readmission</div>
                </div>
                <div className="flex divide-x divide-slate-100 overflow-x-auto">
                   {hospitalsWithScore.map(h => (
                      <div key={h.id} className="flex-1 p-6 min-w-[200px] space-y-8">
                         {[
-                           { val: h.metrics.mortalityComparison, color: '#ef4444' }, // Red for bad, but here scale is 1-5 where 5 is best
+                           { val: h.metrics.mortalityComparison, color: '#ef4444' },
                            { val: h.metrics.safetyComparison, color: '#3b82f6' },
-                           { val: h.metrics.patientExperience, color: '#eab308' },
                            { val: h.metrics.readmissionComparison, color: '#8b5cf6' }
                         ].map((metric, i) => (
                            <div key={i} className="flex items-center gap-2">
@@ -244,14 +228,12 @@ export function ComparisonPage() {
             </div>
             <div className="grid grid-cols-[200px_1fr] divide-x divide-slate-100">
                <div className="p-6 text-sm text-slate-500 flex flex-col justify-center gap-6">
-                  <p>Distance</p>
                   <p>Network Status</p>
                   <p>Hospital Type</p>
                </div>
                <div className="flex divide-x divide-slate-100 overflow-x-auto">
                   {hospitalsWithScore.map(h => (
                      <div key={h.id} className="flex-1 p-6 flex flex-col justify-center gap-6 min-w-[200px] text-center">
-                        <div className="font-medium text-slate-900">{h.distance} miles</div>
                         <div>
                            <Badge variant={h.isInNetwork ? 'success' : 'destructive'} className={h.isInNetwork ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}>
                               {h.isInNetwork ? "In Network" : "Out of Network"}

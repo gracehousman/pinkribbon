@@ -1,106 +1,18 @@
-<<<<<<< Updated upstream
-import React, { useState, useMemo, Suspense, lazy } from 'react';
-import { Filter, Map as MapIcon, ChevronDown, Check, X, ArrowRight, Search, SlidersHorizontal, Star } from 'lucide-react';
-import { HOSPITALS } from '../data/mockData';
-=======
-import React, { useState, useMemo, useEffect } from 'react';
-import { Filter, Map as MapIcon, ChevronDown, Check, X, ArrowRight, Search, SlidersHorizontal, Star, Loader2 } from 'lucide-react';
-import { Hospital } from '../data/mockData';
->>>>>>> Stashed changes
+import { useState, useMemo, Suspense, lazy, useEffect } from 'react';
+import { Map as MapIcon, ChevronDown, X, ArrowRight, Search, SlidersHorizontal, Loader2, AlertCircle } from 'lucide-react';
+import { HOSPITALS, Hospital } from '../data/mockData';
 import { HospitalCard } from '../components/HospitalCard';
 import { Button } from '../components/ui/Button';
-import { Input } from '../components/ui/Input';
 import { Badge } from '../components/ui/Badge';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { cn } from '../lib/utils';
 import { PATHWAY_NAMES, PATHWAY_TO_TREATMENT_ID, calculateBestTreatment, ProjectionResult, searchHospitals } from '../lib/api';
 
-<<<<<<< Updated upstream
 // Dynamically import Leaflet map to avoid SSR issues
 const LeafletMap = lazy(() => import('../components/LeafletMap').then(m => ({ default: m.LeafletMap })));
-=======
-// Map Component with Rating Pins
-const MapView = ({ hospitals, hoveredId, selectedIds, onSelect, onHover }: any) => {
-  // Calculate bounds
-  const lats = hospitals.map((h: any) => h.coordinates.lat);
-  const lngs = hospitals.map((h: any) => h.coordinates.lng);
-  const minLat = Math.min(...lats) - 0.05;
-  const maxLat = Math.max(...lats) + 0.05;
-  const minLng = Math.min(...lngs) - 0.05;
-  const maxLng = Math.max(...lngs) + 0.05;
-
-  return (
-    <div className="relative w-full h-full bg-slate-100 overflow-hidden">
-      {/* Map Background Pattern */}
-      <div className="absolute inset-0 opacity-10 bg-[linear-gradient(#cbd5e1_1px,transparent_1px),linear-gradient(90deg,#cbd5e1_1px,transparent_1px)] bg-[size:20px_20px]"></div>
-
-      {/* Pins */}
-      {hospitals.map((hospital: any) => {
-        const latPercent = (hospital.coordinates.lat - minLat) / (maxLat - minLat) * 100;
-        const lngPercent = (hospital.coordinates.lng - minLng) / (maxLng - minLng) * 100;
-
-        const isSelected = selectedIds.includes(hospital.id);
-        const isHovered = hoveredId === hospital.id;
-
-        // Rating Color Logic
-        let ratingColor = "bg-slate-400";
-        if (hospital.metrics.overallRating >= 4.5) ratingColor = "bg-green-500";
-        else if (hospital.metrics.overallRating >= 3.5) ratingColor = "bg-yellow-500";
-        else if (hospital.metrics.overallRating >= 3.0) ratingColor = "bg-orange-500";
-        else ratingColor = "bg-red-500";
-
-        return (
-          <div
-            key={hospital.id}
-            className="absolute transform -translate-x-1/2 -translate-y-1/2 cursor-pointer transition-all duration-300 z-10"
-            style={{ bottom: `${latPercent}%`, left: `${lngPercent}%` }}
-            onMouseEnter={() => onHover(hospital.id)}
-            onMouseLeave={() => onHover(null)}
-            onClick={() => onSelect(hospital.id)}
-          >
-            <div className={cn(
-              "flex flex-col items-center group",
-              isHovered || isSelected ? "scale-110 z-50" : "scale-100"
-            )}>
-               <div className={cn(
-                 "px-2 py-1 rounded-md shadow-lg border-2 transition-colors flex items-center gap-1",
-                 isSelected ? "bg-[#E91E63] border-white text-white ring-2 ring-[#E91E63]/30" :
-                 isHovered ? "bg-white border-[#E91E63] text-slate-900" : "bg-white border-slate-200 text-slate-700"
-               )}>
-                 <span className={cn("font-bold text-xs", isSelected ? "text-white" : "text-slate-900")}>{hospital.metrics.overallRating}</span>
-                 <Star className={cn("h-3 w-3 fill-current", isSelected ? "text-white" : "text-yellow-400")} />
-               </div>
-
-               {/* Arrow */}
-               <div className={cn(
-                 "w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[8px]",
-                 isSelected ? "border-t-[#E91E63]" :
-                 isHovered ? "border-t-white" : "border-t-white"
-               )}></div>
-
-               {/* Tooltip on Hover */}
-               {(isHovered || isSelected) && (
-                 <div className="absolute bottom-14 bg-white p-3 rounded-lg shadow-xl border w-48 text-center z-50 pointer-events-none animate-in fade-in zoom-in duration-200 origin-bottom">
-                    <div className="font-bold text-sm text-slate-900 truncate">{hospital.name}</div>
-                    <div className="flex justify-between items-center mt-2 text-xs text-slate-500 border-t pt-2">
-                       <span>{hospital.distance > 0 ? `${hospital.distance} mi` : 'Nearby'}</span>
-                       <span className="font-bold text-[#00BFB3]">
-                         {hospital.metrics.estOutOfPocket > 0 ? `$${hospital.metrics.estOutOfPocket}` : 'N/A'}
-                       </span>
-                    </div>
-                 </div>
-               )}
-            </div>
-          </div>
-        );
-      })}
-    </div>
-  );
-};
->>>>>>> Stashed changes
 
 const SIMULATION_STORAGE_KEY = 'carecompass_simulation_results';
 
+// Get user's ZIP code from profile
 const getUserZip = (): string => {
   try {
     const saved = localStorage.getItem('carecompass_profile');
@@ -123,25 +35,47 @@ export function MapSearchPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [userZip, setUserZip] = useState('');
+  const [useRealData, setUseRealData] = useState(false);
 
   // Fetch hospitals from backend on mount
   useEffect(() => {
     const zip = getUserZip();
     setUserZip(zip);
+
     if (!zip) {
+      // No ZIP code, use mock data
+      setHospitals(HOSPITALS);
       setLoading(false);
-      setError('Please set your ZIP code in your profile first.');
+      setUseRealData(false);
       return;
     }
+
     setLoading(true);
     searchHospitals(zip)
       .then(data => {
-        setHospitals(data.hospitals);
+        if (data.hospitals && data.hospitals.length > 0) {
+          // Always use real backend data for the list
+          setHospitals(data.hospitals);
+          setUseRealData(true);
+
+          // Check if hospitals have coordinates for the map
+          const hasCoords = data.hospitals.some(h => h.coordinates.lat !== 0 || h.coordinates.lng !== 0);
+          if (!hasCoords) {
+            setError(`Found ${data.count} hospitals near ${zip}. Map visualization pending geocoding.`);
+          }
+        } else {
+          // No hospitals found, use sample data
+          setHospitals(HOSPITALS);
+          setUseRealData(false);
+          setError('No hospitals found for this ZIP code. Showing sample data.');
+        }
         setLoading(false);
       })
       .catch(err => {
         console.error('Hospital search error:', err);
-        setError('Failed to load hospitals. Is the backend running?');
+        setError('Backend unavailable. Showing sample data.');
+        setHospitals(HOSPITALS);
+        setUseRealData(false);
         setLoading(false);
       });
   }, []);
@@ -192,8 +126,7 @@ export function MapSearchPage() {
     );
   };
 
-  // Check if map can be displayed (hospitals have real coordinates)
-  const hasCoordinates = hospitals.some(h => h.coordinates.lat !== 0 || h.coordinates.lng !== 0);
+  const hasMapCoordinates = hospitals.some(h => h.coordinates.lat !== 0 || h.coordinates.lng !== 0);
 
   return (
     <div className="flex flex-col h-[calc(100vh-64px)] overflow-hidden">
@@ -206,7 +139,9 @@ export function MapSearchPage() {
              Breast Cancer Treatment Centers
           </div>
           <span className="text-slate-300">|</span>
-          <span className="text-slate-500">{userZip || 'No ZIP set'} &bull; nearby</span>
+          <span className="text-slate-500">
+            {userZip || '94305'} • {useRealData ? 'Real data' : 'Sample data'}
+          </span>
         </div>
         <div className="hidden md:flex items-center gap-2">
            {bestPathway ? (
@@ -225,6 +160,14 @@ export function MapSearchPage() {
            )}
         </div>
       </div>
+
+      {/* Info Banner */}
+      {error && (
+        <div className="bg-blue-50 border-b border-blue-200 px-4 py-2 flex items-center gap-2 text-sm text-blue-800">
+          <AlertCircle className="h-4 w-4" />
+          <span>{error}</span>
+        </div>
+      )}
 
       <div className="flex flex-1 overflow-hidden relative">
         {/* Left Panel: Sidebar */}
@@ -263,7 +206,7 @@ export function MapSearchPage() {
              </div>
           </div>
 
-          {/* Sticky Compare Bar (conditionally rendered at top of list) */}
+          {/* Sticky Compare Bar */}
           {selectedIds.length > 0 && (
             <div className="bg-[#E91E63]/10 border-b border-[#E91E63]/20 p-3 sticky top-0 z-10 backdrop-blur-sm">
               <div className="flex justify-between items-center mb-2">
@@ -286,7 +229,7 @@ export function MapSearchPage() {
               <Button
                 className="w-full bg-[#E91E63] hover:bg-[#D81B60] text-white font-semibold shadow-md shadow-pink-500/20 mt-2"
                 size="sm"
-                onClick={() => navigate('/compare')}
+                onClick={() => navigate('/compare', { state: { selectedIds, hospitals: hospitals.filter(h => selectedIds.includes(h.id)) } })}
                 disabled={selectedIds.length < 2}
               >
                 Compare These Centers <ArrowRight className="ml-2 h-4 w-4" />
@@ -296,26 +239,12 @@ export function MapSearchPage() {
 
           {/* Scrollable List */}
           <div className="flex-1 overflow-y-auto p-4 bg-slate-50 space-y-4">
-             {loading && (
+             {loading ? (
                <div className="flex flex-col items-center justify-center py-12 text-slate-500">
                  <Loader2 className="h-8 w-8 animate-spin mb-3 text-[#00BFB3]" />
-                 <p className="text-sm">Loading hospitals near {userZip}...</p>
+                 <p className="text-sm">Loading hospitals{userZip ? ` near ${userZip}` : ''}...</p>
                </div>
-             )}
-             {error && (
-               <div className="text-center py-12">
-                 <p className="text-red-500 text-sm mb-3">{error}</p>
-                 <Button variant="outline" size="sm" onClick={() => navigate('/profile')}>
-                   Go to Profile
-                 </Button>
-               </div>
-             )}
-             {!loading && !error && hospitals.length === 0 && (
-               <div className="text-center py-12 text-slate-500">
-                 <p className="text-sm">No hospitals found near ZIP code {userZip}.</p>
-               </div>
-             )}
-             {!loading && !error && hospitals.length > 0 && (
+             ) : (
                <>
                  <div className="flex justify-between items-center text-xs text-slate-500 mb-2">
                    <span>{sortedHospitals.length} providers found</span>
@@ -351,38 +280,35 @@ export function MapSearchPage() {
           </div>
         </div>
 
-        {/* Right Panel: Map */}
+        {/* Right Panel: Leaflet Map */}
         <div className="hidden md:block flex-1 h-full relative">
-<<<<<<< Updated upstream
-          <Suspense fallback={
-            <div className="w-full h-full bg-slate-100 flex items-center justify-center">
-              <p className="text-slate-500">Loading map...</p>
+          {sortedHospitals.length > 0 && hasMapCoordinates ? (
+            <Suspense fallback={
+              <div className="w-full h-full bg-slate-100 flex items-center justify-center">
+                <Loader2 className="h-8 w-8 animate-spin text-[#00BFB3]" />
+              </div>
+            }>
+              <LeafletMap
+                hospitals={sortedHospitals}
+                hoveredId={hoveredId}
+                selectedIds={selectedIds}
+                onSelect={handleSelect}
+                onHover={setHoveredId}
+              />
+            </Suspense>
+          ) : loading ? (
+            <div className="flex items-center justify-center h-full bg-slate-50">
+              <Loader2 className="h-8 w-8 animate-spin text-[#00BFB3]" />
             </div>
-          }>
-            <LeafletMap
-=======
-          {hasCoordinates ? (
-            <MapView
->>>>>>> Stashed changes
-              hospitals={sortedHospitals}
-              hoveredId={hoveredId}
-              selectedIds={selectedIds}
-              onSelect={handleSelect}
-              onHover={setHoveredId}
-            />
-<<<<<<< Updated upstream
-          </Suspense>
-=======
           ) : (
             <div className="flex items-center justify-center h-full bg-slate-50">
-              <div className="text-center text-slate-400">
+              <div className="text-center text-slate-400 max-w-md p-6">
                 <MapIcon className="h-12 w-12 mx-auto mb-3 text-slate-300" />
-                <p className="text-sm font-medium">Map view unavailable</p>
-                <p className="text-xs mt-1">Hospital coordinates not available in dataset</p>
+                <p className="text-sm font-medium mb-2">No hospitals to display</p>
+                <p className="text-xs">{error || 'Create a profile with a ZIP code to find nearby hospitals.'}</p>
               </div>
             </div>
           )}
->>>>>>> Stashed changes
 
           {/* Map Controls */}
           <div className="absolute top-4 right-4 flex flex-col gap-2 z-[1000]">
