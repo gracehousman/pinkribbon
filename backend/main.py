@@ -9,6 +9,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from models import PatientInput
 from simulation_pathway_engine import run_projection, ITERATIONS_PER_PATHWAY
+from hospitals import HOSPITALS
 
 logger = logging.getLogger("carecompass")
 logging.basicConfig(level=logging.INFO)
@@ -53,3 +54,7 @@ def project(patient: PatientInput):
         result.get("monte_carlo_computation_seconds"),
     )
     return result
+
+@app.get("/hospitals")
+def get_hospitals():
+    return HOSPITALS

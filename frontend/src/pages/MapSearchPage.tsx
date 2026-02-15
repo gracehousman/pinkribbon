@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, Suspense, lazy } from 'react';
 import { Filter, Map as MapIcon, ChevronDown, Check, X, ArrowRight, Search, SlidersHorizontal, Star } from 'lucide-react';
 import { HOSPITALS } from '../data/mockData';
 import { HospitalCard } from '../components/HospitalCard';
@@ -9,82 +9,8 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { cn } from '../lib/utils';
 import { PATHWAY_NAMES, PATHWAY_TO_TREATMENT_ID, calculateBestTreatment, ProjectionResult } from '../lib/api';
 
-// Map Component with Rating Pins
-const MapView = ({ hospitals, hoveredId, selectedIds, onSelect, onHover }: any) => {
-  // Calculate bounds
-  const lats = hospitals.map((h: any) => h.coordinates.lat);
-  const lngs = hospitals.map((h: any) => h.coordinates.lng);
-  const minLat = Math.min(...lats) - 0.05;
-  const maxLat = Math.max(...lats) + 0.05;
-  const minLng = Math.min(...lngs) - 0.05;
-  const maxLng = Math.max(...lngs) + 0.05;
-
-  return (
-    <div className="relative w-full h-full bg-slate-100 overflow-hidden">
-      {/* Map Background Pattern */}
-      <div className="absolute inset-0 opacity-10 bg-[linear-gradient(#cbd5e1_1px,transparent_1px),linear-gradient(90deg,#cbd5e1_1px,transparent_1px)] bg-[size:20px_20px]"></div>
-      
-      {/* Pins */}
-      {hospitals.map((hospital: any) => {
-        const latPercent = (hospital.coordinates.lat - minLat) / (maxLat - minLat) * 100;
-        const lngPercent = (hospital.coordinates.lng - minLng) / (maxLng - minLng) * 100;
-        
-        const isSelected = selectedIds.includes(hospital.id);
-        const isHovered = hoveredId === hospital.id;
-
-        // Rating Color Logic
-        let ratingColor = "bg-slate-400";
-        if (hospital.metrics.overallRating >= 4.5) ratingColor = "bg-green-500";
-        else if (hospital.metrics.overallRating >= 3.5) ratingColor = "bg-yellow-500";
-        else if (hospital.metrics.overallRating >= 3.0) ratingColor = "bg-orange-500";
-        else ratingColor = "bg-red-500";
-
-        return (
-          <div
-            key={hospital.id}
-            className="absolute transform -translate-x-1/2 -translate-y-1/2 cursor-pointer transition-all duration-300 z-10"
-            style={{ bottom: `${latPercent}%`, left: `${lngPercent}%` }}
-            onMouseEnter={() => onHover(hospital.id)}
-            onMouseLeave={() => onHover(null)}
-            onClick={() => onSelect(hospital.id)}
-          >
-            <div className={cn(
-              "flex flex-col items-center group",
-              isHovered || isSelected ? "scale-110 z-50" : "scale-100"
-            )}>
-               <div className={cn(
-                 "px-2 py-1 rounded-md shadow-lg border-2 transition-colors flex items-center gap-1",
-                 isSelected ? "bg-[#E91E63] border-white text-white ring-2 ring-[#E91E63]/30" : 
-                 isHovered ? "bg-white border-[#E91E63] text-slate-900" : "bg-white border-slate-200 text-slate-700"
-               )}>
-                 <span className={cn("font-bold text-xs", isSelected ? "text-white" : "text-slate-900")}>{hospital.metrics.overallRating}</span>
-                 <Star className={cn("h-3 w-3 fill-current", isSelected ? "text-white" : "text-yellow-400")} />
-               </div>
-               
-               {/* Arrow */}
-               <div className={cn(
-                 "w-0 h-0 border-l-[6px] border-l-transparent border-r-[6px] border-r-transparent border-t-[8px]",
-                 isSelected ? "border-t-[#E91E63]" : 
-                 isHovered ? "border-t-white" : "border-t-white"
-               )}></div>
-               
-               {/* Tooltip on Hover */}
-               {(isHovered || isSelected) && (
-                 <div className="absolute bottom-14 bg-white p-3 rounded-lg shadow-xl border w-48 text-center z-50 pointer-events-none animate-in fade-in zoom-in duration-200 origin-bottom">
-                    <div className="font-bold text-sm text-slate-900 truncate">{hospital.name}</div>
-                    <div className="flex justify-between items-center mt-2 text-xs text-slate-500 border-t pt-2">
-                       <span>{hospital.distance} mi</span>
-                       <span className="font-bold text-[#00BFB3]">${hospital.metrics.estOutOfPocket}</span>
-                    </div>
-                 </div>
-               )}
-            </div>
-          </div>
-        );
-      })}
-    </div>
-  );
-};
+// Dynamically import Leaflet map to avoid SSR issues
+const LeafletMap = lazy(() => import('../components/LeafletMap').then(m => ({ default: m.LeafletMap })));
 
 const SIMULATION_STORAGE_KEY = 'carecompass_simulation_results';
 
@@ -273,16 +199,22 @@ export function MapSearchPage() {
 
         {/* Right Panel: Map */}
         <div className="hidden md:block flex-1 h-full relative">
-          <MapView
-            hospitals={sortedHospitals}
-            hoveredId={hoveredId}
-            selectedIds={selectedIds}
-            onSelect={handleSelect}
-            onHover={setHoveredId}
-          />
-          
+          <Suspense fallback={
+            <div className="w-full h-full bg-slate-100 flex items-center justify-center">
+              <p className="text-slate-500">Loading map...</p>
+            </div>
+          }>
+            <LeafletMap
+              hospitals={sortedHospitals}
+              hoveredId={hoveredId}
+              selectedIds={selectedIds}
+              onSelect={handleSelect}
+              onHover={setHoveredId}
+            />
+          </Suspense>
+
           {/* Map Controls */}
-          <div className="absolute top-4 right-4 flex flex-col gap-2">
+          <div className="absolute top-4 right-4 flex flex-col gap-2 z-[1000]">
              <Button variant="secondary" size="icon" className="bg-white shadow-md rounded-lg hover:bg-slate-50">
                <MapIcon className="h-5 w-5 text-slate-600" />
              </Button>
