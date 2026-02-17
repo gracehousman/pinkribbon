@@ -9,13 +9,13 @@ We built PinkRibbon to provide patients with a holistic understanding of their t
 ## What it does
 
 PinkRibbon is a patient-facing simulator for breast cancer treatment planning.
-The patient enters their relevant data and health records, and PinkRibbon is able to:
-Determine which breast cancer treatment pathways a patient is eligible for
-Locally run 5,000 Monte Carlo simulations by repeatedly sampling plausible values for baseline 5-year recurrence risk (based on stage/subtype) and treatment effect size (hazard ratio), computing a treated recurrence risk each time, then summarizing the 5,000 outcomes as a recurrence range (with confidence bounds) instead of a single estimate.
-Provide the patient with a visualization of their potential treatment plans, highlighting the one with the lowest probability of cancer recurrence
-For that highlighted treatment path, PinkRibbon will provide the patient with information on what to expect from the treatment and recovery, genuine reassurance, and potential tools to further support their mental and physical health
-Find treatment centers within a patient’s zip code and display each on a map inside the platform, alongside their rating and cost efficiency, which is pulled from CMS data
-Allow users to compare hospitals in their area, with PinkRibbon recommending the best fit based off of a patient’s preferences on the importance of rating and cost
+The patient enters their relevant data and health records, and PinkRibbon is able to:\
+-Determine which breast cancer treatment pathways a patient is eligible for\
+-Locally run 5,000 Monte Carlo simulations by repeatedly sampling plausible values for baseline 5-year recurrence risk (based on stage/subtype) and treatment effect size (hazard ratio), computing a treated recurrence risk each time, then summarizing the 5,000 outcomes as a recurrence range (with confidence bounds) instead of a single estimate\
+-Provide the patient with a visualization of their potential treatment plans, highlighting the one with the lowest probability of cancer recurrence\
+-For that highlighted treatment path, PinkRibbon will provide the patient with information on what to expect from the treatment and recovery, genuine reassurance, and potential tools to further support their mental and physical health\
+-Find treatment centers within a patient’s zip code and display each on a map inside the platform, alongside their rating and cost efficiency, which is pulled from CMS data\
+-Allow users to compare hospitals in their area, with PinkRibbon recommending the best fit based off of a patient’s preferences on the importance of rating and cost\
 PinkRibbon also models other data about the hospitals under comparison, like their mortality, safety of care, and readmission rate.
 
 
