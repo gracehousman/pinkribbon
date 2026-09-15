@@ -16,9 +16,9 @@ This is a standalone copy of the team project, originally developed at
 [priyanka-stanf/pink-ribbon](https://github.com/priyanka-stanf/pink-ribbon) and mirrored
 here with full commit history, so every contributor's authorship is preserved.
 
-I made additional updates to get the demo fully working -- deploying the FastAPI backend
+I made additional updates to get the demo fully working (deploying the FastAPI backend
 to Vercel as a serverless function, geocoding the CMS hospital dataset, and replacing
-ZIP-prefix matching with real distance ranking.
+ZIP-prefix matching with real distance ranking).
 
 Licensed MIT -- see [LICENSE](LICENSE).
 
