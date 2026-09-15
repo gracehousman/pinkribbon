@@ -14,9 +14,13 @@ Built by a team of four at TreeHacks 2026. GitHub contributors:
 
 This is a standalone copy of the team project, originally developed at
 [priyanka-stanf/pink-ribbon](https://github.com/priyanka-stanf/pink-ribbon) and mirrored
-here with full commit history, so every contributor's authorship is preserved. I made additional updates
-to get the demo fully working. Licensed
-MIT -- see [LICENSE](LICENSE).
+here with full commit history, so every contributor's authorship is preserved.
+
+I made additional updates to get the demo fully working -- deploying the FastAPI backend
+to Vercel as a serverless function, geocoding the CMS hospital dataset, and replacing
+ZIP-prefix matching with real distance ranking.
+
+Licensed MIT -- see [LICENSE](LICENSE).
 
 ## Inspiration
 Nearly 40% of women with breast cancer regret their treatment decisions within five years. Why? Because outcomes can vary based on tumor type, stage, and individual risk factors, which patients rarely get to see or understand before deciding on a treatment plan. 
