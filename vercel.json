@@ -34,6 +34,10 @@
       "dest": "/frontend/assets/$1"
     },
     {
+      "src": "/(.+\\.[A-Za-z0-9]+)$",
+      "dest": "/frontend/$1"
+    },
+    {
       "handle": "filesystem"
     },
     {
