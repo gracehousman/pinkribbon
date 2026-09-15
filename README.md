@@ -14,7 +14,8 @@ Built by a team of four at TreeHacks 2026. GitHub contributors:
 
 This is a standalone copy of the team project, originally developed at
 [priyanka-stanf/pink-ribbon](https://github.com/priyanka-stanf/pink-ribbon) and mirrored
-here with full commit history, so every contributor's authorship is preserved. Licensed
+here with full commit history, so every contributor's authorship is preserved. I made additional updates
+to get the demo fully working. Licensed
 MIT -- see [LICENSE](LICENSE).
 
 ## Inspiration
