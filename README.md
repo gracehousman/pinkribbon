@@ -45,7 +45,7 @@ PinkRibbon also models other data about the hospitals under comparison, like the
 
 ## How we built it
 PinkRibbon was built as a full-stack, simulation-driven web application designed to model personalized breast cancer treatment trajectories in real time.
-On the backend, we used FastAPI (Python) to build a high-performance API capable of handling clinical input processing and simulation requests efficiently. Our core simulation engine leverages NumPy + SciPy to run large-scale Monte Carlo simulations, generating recurrence distributions rather than single-point estimates.
+On the backend, we used FastAPI (Python) to build a high-performance API capable of handling clinical input processing and simulation requests efficiently. Our core simulation engine leverages NumPy to run large-scale Monte Carlo simulations, generating recurrence distributions rather than single-point estimates.
 The model operates on a modular parameter system grounded in real-world data sources, including SEER epidemiology for population-level recurrence statistics, PubMed RCT and meta-analysis hazard ratios to adjust risk by treatment type and stage, and CMS cost distributions to estimate financial impact. This architecture allows us to dynamically compute mean recurrence, standard deviation (capturing uncertainty), major side effect probabilities, and median cost for each treatment pathway.
 On the frontend, we built an interactive interface using React + TypeScript to ensure type safety and scalability. We styled components with Material UI, Radix UI, and Tailwind CSS, balancing accessibility with rapid iteration during the hackathon.
 To make uncertainty intuitive, we used Recharts to visualize recurrence distributions and comparative outcome metrics. For geographic transparency, we integrated Leaflet + React-Leaflet to render hospital-level maps, connecting treatment decisions to real-world care environments. Communication between the frontend and backend is handled via Axios, enabling seamless API calls and real-time simulation updates.
@@ -55,7 +55,7 @@ Backend
 FastAPI (Python)
 
 
-NumPy + SciPy for Monte Carlo simulations
+NumPy for Monte Carlo simulations
 
 
 Modular parameter system grounded in:
