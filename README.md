@@ -4,6 +4,19 @@
 
 A patient-facing simulator for breast cancer treatment planning. Built at TreeHacks 2026.
 
+## Team
+
+Built by a team of four at TreeHacks 2026. GitHub contributors:
+
+- [@gracehousman](https://github.com/gracehousman)
+- [@priyanka-stanf](https://github.com/priyanka-stanf)
+- [@shardulmarathe](https://github.com/shardulmarathe)
+
+This is a standalone copy of the team project, originally developed at
+[priyanka-stanf/pink-ribbon](https://github.com/priyanka-stanf/pink-ribbon) and mirrored
+here with full commit history, so every contributor's authorship is preserved. Licensed
+MIT -- see [LICENSE](LICENSE).
+
 ## Inspiration
 Nearly 40% of women with breast cancer regret their treatment decisions within five years. Why? Because outcomes can vary based on tumor type, stage, and individual risk factors, which patients rarely get to see or understand before deciding on a treatment plan. 
 
